@@ -1,0 +1,1 @@
+self.__NEXT_FONT_MANIFEST="{\"pages\":{},\"app\":{\"/Users/phiraphat/Desktop/Work group/Project/OurDaily-Post/src/app/layout\":[\"static/media/03de48d6bbdbd28a-s.p.woff2\",\"static/media/6bc8b5686086978a-s.p.woff2\"]},\"appUsingSizeAdjust\":true,\"pagesUsingSizeAdjust\":false}"
