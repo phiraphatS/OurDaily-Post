@@ -63,14 +63,16 @@ export default function PostsActionComponent() {
                   allowMultiple={true}
                   maxFiles={3}
                   name="imgfile"
+                  labelIdle='Drop or Upload Image.'
+                  credits={false}
                 />
               </DrawerBody>
 
               <DrawerFooter borderTopWidth="1px">
                 <HStack spacing={4} align="stretch">
-                  <Button leftIcon={<AttachmentIcon />} colorScheme="teal" onClick={handleUploadClick}>
+                  {/* <Button leftIcon={<AttachmentIcon />} colorScheme="teal" onClick={handleUploadClick}>
                     Upload Picture
-                  </Button>
+                  </Button> */}
                   <Button colorScheme="blue" type="submit">
                     Post
                   </Button>

@@ -10,3 +10,9 @@
 # next.js
 /.next/
 /out/
+
+
+/dist
+.DS_Store
+.AppleDouble
+.LSOverride

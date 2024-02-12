@@ -59,6 +59,10 @@ const mockPosts = [
 ];
 export default function PostsComponent() {
   const [posts, setPosts] = useState(mockPosts);
+  const postTime = (now: Date) => {
+    //generate and return post time to sting
+    
+  }
   return (
     <VStack spacing={4} width="full">
       <PostsActionComponent/>
