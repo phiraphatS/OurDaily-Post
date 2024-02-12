@@ -58,6 +58,7 @@ const mockPosts = [
 ];
 export default function PostsComponent() {
   const [posts, setPosts] = useState(mockPosts);
+<<<<<<< Updated upstream
 
   const formik = useFormik({
     initialValues: {
@@ -77,6 +78,13 @@ export default function PostsComponent() {
 
   };
 
+=======
+  const postTime = (createdDate: Date) => {
+    //generate and return post time to sting
+    const now = new Date();
+    
+  }
+>>>>>>> Stashed changes
   return (
     <VStack spacing={4} width="full">
       <Box
