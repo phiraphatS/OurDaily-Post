@@ -1351,6 +1351,16 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpac
 
 /***/ }),
 
+/***/ "(ssr)/./node_modules/@chakra-ui/icons/dist/chunk-NGPSDGVK.mjs":
+/*!***************************************************************!*\
+  !*** ./node_modules/@chakra-ui/icons/dist/chunk-NGPSDGVK.mjs ***!
+  \***************************************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   AttachmentIcon: () => (/* binding */ AttachmentIcon)\n/* harmony export */ });\n/* harmony import */ var _chakra_ui_icon__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @chakra-ui/icon */ \"(ssr)/./node_modules/@chakra-ui/icon/dist/chunk-DEQZ7DVA.mjs\");\n/* __next_internal_client_entry_do_not_use__ AttachmentIcon auto */ // src/Attachment.tsx\n\nvar AttachmentIcon = (0,_chakra_ui_icon__WEBPACK_IMPORTED_MODULE_0__.createIcon)({\n    displayName: \"AttachmentIcon\",\n    d: \"M21.843,3.455a6.961,6.961,0,0,0-9.846,0L1.619,13.832a5.128,5.128,0,0,0,7.252,7.252L17.3,12.653A3.293,3.293,0,1,0,12.646,8L7.457,13.184A1,1,0,1,0,8.871,14.6L14.06,9.409a1.294,1.294,0,0,1,1.829,1.83L7.457,19.67a3.128,3.128,0,0,1-4.424-4.424L13.411,4.869a4.962,4.962,0,1,1,7.018,7.018L12.646,19.67a1,1,0,1,0,1.414,1.414L21.843,13.3a6.96,6.96,0,0,0,0-9.846Z\"\n});\n //# sourceMappingURL=chunk-NGPSDGVK.mjs.map\n//# sourceURL=[module]\n//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiKHNzcikvLi9ub2RlX21vZHVsZXMvQGNoYWtyYS11aS9pY29ucy9kaXN0L2NodW5rLU5HUFNER1ZLLm1qcyIsIm1hcHBpbmdzIjoiOzs7OztvRUFFQSxxQkFBcUI7QUFDd0I7QUFDN0MsSUFBSUMsaUJBQWlCRCwyREFBVUEsQ0FBQztJQUM5QkUsYUFBYTtJQUNiQyxHQUFHO0FBQ0w7QUFJRSxDQUNGLDJDQUEyQyIsInNvdXJjZXMiOlsid2VicGFjazovL2Zvci1sZWFybi1zaXRlLXYxLy4vbm9kZV9tb2R1bGVzL0BjaGFrcmEtdWkvaWNvbnMvZGlzdC9jaHVuay1OR1BTREdWSy5tanM/MmU3MSJdLCJzb3VyY2VzQ29udGVudCI6WyIndXNlIGNsaWVudCdcblxuLy8gc3JjL0F0dGFjaG1lbnQudHN4XG5pbXBvcnQgeyBjcmVhdGVJY29uIH0gZnJvbSBcIkBjaGFrcmEtdWkvaWNvblwiO1xudmFyIEF0dGFjaG1lbnRJY29uID0gY3JlYXRlSWNvbih7XG4gIGRpc3BsYXlOYW1lOiBcIkF0dGFjaG1lbnRJY29uXCIsXG4gIGQ6IFwiTTIxLjg0MywzLjQ1NWE2Ljk2MSw2Ljk2MSwwLDAsMC05Ljg0NiwwTDEuNjE5LDEzLjgzMmE1LjEyOCw1LjEyOCwwLDAsMCw3LjI1Miw3LjI1MkwxNy4zLDEyLjY1M0EzLjI5MywzLjI5MywwLDEsMCwxMi42NDYsOEw3LjQ1NywxMy4xODRBMSwxLDAsMSwwLDguODcxLDE0LjZMMTQuMDYsOS40MDlhMS4yOTQsMS4yOTQsMCwwLDEsMS44MjksMS44M0w3LjQ1NywxOS42N2EzLjEyOCwzLjEyOCwwLDAsMS00LjQyNC00LjQyNEwxMy40MTEsNC44NjlhNC45NjIsNC45NjIsMCwxLDEsNy4wMTgsNy4wMThMMTIuNjQ2LDE5LjY3YTEsMSwwLDEsMCwxLjQxNCwxLjQxNEwyMS44NDMsMTMuM2E2Ljk2LDYuOTYsMCwwLDAsMC05Ljg0NlpcIlxufSk7XG5cbmV4cG9ydCB7XG4gIEF0dGFjaG1lbnRJY29uXG59O1xuLy8jIHNvdXJjZU1hcHBpbmdVUkw9Y2h1bmstTkdQU0RHVksubWpzLm1hcCJdLCJuYW1lcyI6WyJjcmVhdGVJY29uIiwiQXR0YWNobWVudEljb24iLCJkaXNwbGF5TmFtZSIsImQiXSwic291cmNlUm9vdCI6IiJ9\n//# sourceURL=webpack-internal:///(ssr)/./node_modules/@chakra-ui/icons/dist/chunk-NGPSDGVK.mjs\n");
+
+/***/ }),
+
 /***/ "(ssr)/./node_modules/@chakra-ui/image/dist/chunk-QINAG4RG.mjs":
 /*!***************************************************************!*\
   !*** ./node_modules/@chakra-ui/image/dist/chunk-QINAG4RG.mjs ***!
