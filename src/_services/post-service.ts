@@ -15,8 +15,7 @@ async function getFeeds(params: any) {
     };
 
     const queryString = serviceFunction.generateQueryString(params);
-    // const urlEnpoint = `${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/feeds/get-feeds?${queryString}`;
-    const urlEnpoint = `ourapplover.zeabur.app/api/feeds/get-feeds?${queryString}`;
+    const urlEnpoint = `${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/feeds/get-feeds?${queryString}`;
     return fetch(urlEnpoint, requestOptions)
     .then(response => handleResponse(response))
     .then(res => {
@@ -30,8 +29,7 @@ async function postNow(params: any) {
         headers: authHeader(),
         body: JSON.stringify(params)
     };
-    // return fetch(`${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/feeds/post-now`, requestOptions)
-    return fetch(`ourapplover.zeabur.app/api/feeds/post-now`, requestOptions)
+    return fetch(`${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/feeds/post-now`, requestOptions)
     .then(handleResponse)
     .then(res => {
         return res;
@@ -45,8 +43,7 @@ async function uploadFile(params: any) {
         method: "POST",
         body: formData
     };
-    // return fetch(`${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/uploadfile/upload`, requestOptions)
-    return fetch(`ourapplover.zeabur.app/api/uploadfile/upload`, requestOptions)
+    return fetch(`${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/uploadfile/upload`, requestOptions)
     .then(handleResponse)
     .catch((err) => {
         throw err;
