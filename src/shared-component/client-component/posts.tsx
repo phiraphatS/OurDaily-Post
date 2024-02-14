@@ -14,7 +14,7 @@ import PostsActionComponent from './posts-action';
 const mockPosts = [
   {
     id: 1,
-    content: 'this is the first post! I love you very much',
+    content: 'this is the first post!',
     img: [
       "https://via.placeholder.com/800x800?text=First+Image",
       "https://via.placeholder.com/800x800?text=Second+Image",
@@ -31,7 +31,7 @@ const mockPosts = [
   },
   {
     id: 2,
-    content: 'this is the second post! I love you very much',
+    content: 'this is the second post!',
     img: [
       "https://via.placeholder.com/800x800?text=First+Image",
     ],
@@ -44,7 +44,7 @@ const mockPosts = [
   },
   {
     id: 3,
-    content: 'this is the third post! I love you very much',
+    content: 'this is the third post!',
     img: [
       "https://via.placeholder.com/800x800?text=First+Image",
       "https://via.placeholder.com/800x800?text=Second+Image",
@@ -63,7 +63,7 @@ export default function PostsComponent() {
   const postTime = (createdDate: Date) => {
     //generate and return post time to sting
     const now = new Date();
-    
+    //date now, 1 minute, 5 minute, 10 minute, 20 minute
   }
   return (
     <VStack spacing={4} width="full">
