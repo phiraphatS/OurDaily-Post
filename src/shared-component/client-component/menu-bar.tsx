@@ -61,7 +61,6 @@ export default function ResponsiveMenuBar({ children }: Readonly<{ children: Rea
     </Link>
   );
 
-
   return (
     <>
       <Box
@@ -88,7 +87,7 @@ export default function ResponsiveMenuBar({ children }: Readonly<{ children: Rea
           <AvatarGroup size='sm' max={2}>
             {user.map((u, i) => (
               <Avatar key={i} name={u.username} src={u.url} size={"sm"}>
-                <AvatarBadge boxSize='1em' bg={u.status === "Online" ? "green.500" : "red.500"} />
+                <AvatarBadge boxSize='1em' bg={u.status === "Online" ? "green.500" : "#999"} />
               </Avatar>
             ))}
           </AvatarGroup>
