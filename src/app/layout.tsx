@@ -4,6 +4,7 @@ import { fonts } from "./fonts";
 import { Box } from "@chakra-ui/react";
 import "../styles/globals.scss";
 import '@fortawesome/fontawesome-svg-core/styles.css';
+import 'filepond/dist/filepond.min.css';
 
 export const metadata: Metadata = {
   title: "Our Daily Post",
