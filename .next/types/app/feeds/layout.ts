@@ -1,4 +1,4 @@
-// File: /Users/phiraphat/Desktop/Work group/Project/OurDaily-Post/src/app/feeds/layout.tsx
+// File: /Users/phiraphat/Documents/GitHub/OurDaily-Post/src/app/feeds/layout.tsx
 import * as entry from '../../../../src/app/feeds/layout.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 
