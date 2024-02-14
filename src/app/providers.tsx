@@ -2,9 +2,11 @@
 import { theme } from './theme'
 import { ChakraProvider } from '@chakra-ui/react'
 import { AppProgressBar as ProgressBar } from 'next-nprogress-bar';
+import { Suspense } from 'react';
 
 export function Providers({ children }: { children: React.ReactNode }) {
-  return <ChakraProvider theme={theme}>
+  return <Suspense fallback={<>loading...</>}>
+    <ChakraProvider theme={theme}>
       {children}
       <ProgressBar
         height="4px"
@@ -13,4 +15,5 @@ export function Providers({ children }: { children: React.ReactNode }) {
         shallowRouting
       />
     </ChakraProvider>
+  </Suspense>
 }
