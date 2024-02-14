@@ -9,13 +9,13 @@ const user = [
   {
     username: "Bam",
     position: "Girlfriend",
-    url: "",
+    url: "https://cloud-object-storage-cos-standard-tni.s3.jp-tok.cloud-object-storage.appdomain.cloud/received_226124396716749.jpeg",
     status: "Online"
   },
   {
     username: "Sue",
     position: "Boyfriend",
-    url: "",
+    url: "https://cloud-object-storage-cos-standard-tni.s3.jp-tok.cloud-object-storage.appdomain.cloud/P1012767.JPG",
     status: "Offline"
   }
 ];
@@ -61,7 +61,6 @@ export default function ResponsiveMenuBar({ children }: Readonly<{ children: Rea
     </Link>
   );
 
-
   return (
     <>
       <Box
@@ -87,8 +86,8 @@ export default function ResponsiveMenuBar({ children }: Readonly<{ children: Rea
           </Flex>
           <AvatarGroup size='sm' max={2}>
             {user.map((u, i) => (
-              <Avatar key={i} name={u.username} src={u.url} size={"sm"}>
-                <AvatarBadge boxSize='1em' bg={u.status === "Online" ? "green.500" : "red.500"} />
+              <Avatar key={i} name={u.username} src={u.url}>
+                <AvatarBadge boxSize='1em' bg={u.status === "Online" ? "green.500" : "#999"} />
               </Avatar>
             ))}
           </AvatarGroup>

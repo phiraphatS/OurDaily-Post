@@ -1,5 +1,5 @@
 'use client'
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, Text, Textarea, Button, VStack, HStack, Avatar, Card, CardBody, CardFooter, CardHeader, Flex, Heading, IconButton } from '@chakra-ui/react';
 import { useFormik } from "formik";
 import { AttachmentIcon } from '@chakra-ui/icons';
@@ -10,6 +10,7 @@ import { BsThreeDotsVertical } from 'react-icons/bs';
 import { Image } from '@chakra-ui/react';
 import { Grid, GridItem } from "@chakra-ui/react";
 import PostsActionComponent from './posts-action';
+import { postService } from '@/_services/post-service';
 
 const mockPosts = [
   {
@@ -24,7 +25,7 @@ const mockPosts = [
     ],
     createdAt: new Date(),
     profile: {
-      avartar: "https://via.placeholder.com/150x150?text=Avatar+Image",
+      avatar: "https://via.placeholder.com/150x150?text=Avatar+Image",
       fullName: "John Doe",
       position: "Software Engineer"
     }
@@ -37,7 +38,7 @@ const mockPosts = [
     ],
     createdAt: new Date(),
     profile: {
-      avartar: "https://via.placeholder.com/150x150?text=Avatar+Image",
+      avatar: "https://via.placeholder.com/150x150?text=Avatar+Image",
       fullName: "John Doe",
       position: "Software Engineer"
     }
@@ -51,7 +52,7 @@ const mockPosts = [
     ],
     createdAt: new Date(),
     profile: {
-      avartar: "https://via.placeholder.com/150x150?text=Avatar+Image",
+      avatar: "https://via.placeholder.com/150x150?text=Avatar+Image",
       fullName: "John Doe",
       position: "Software Engineer"
     }
@@ -63,11 +64,59 @@ export default function PostsComponent() {
   const postTime = (createdDate: Date) => {
     //generate and return post time to sting
     const now = new Date();
-    //date now, 1 minute, 5 minute, 10 minute, 20 minute
+    //date now, 1 minute, 5 minute, 10 minute, 20 minute, 1 hour, 1 day, 1 week, 1 month, 1 year, and more than 1 year
+    const time = now.getTime() - createdDate.getTime();
+    const postTime = (createdDate: Date) => {
+      const now = new Date();
+      const time = now.getTime() - createdDate.getTime();
+
+      switch (true) {
+        case time < 60000:
+          return "Just now";
+        case time < 300000:
+          return "5 minutes ago";
+        case time < 600000:
+          return "10 minutes ago";
+        case time < 1200000:
+          return "20 minutes ago";
+        case time < 3600000:
+          return "1 hour ago";
+        case time < 86400000:
+          return "1 day ago";
+        case time < 604800000:
+          return "1 week ago";
+        case time < 2592000000:
+          return "1 month ago";
+        case time < 31536000000:
+          return "1 year ago";
+        default:
+          return "more than 1 year ago";
+      }
+    };
   }
+
+  useEffect(() => {
+    fetchPosts()
+
+    return () => {
+      //cleanup
+    }
+  },[])
+
+  const fetchPosts = (_page = 1, _limit = 10) => {
+    postService.getFeeds({
+      page: _page,
+      limit: _limit
+    }).then((res: any) => {
+      setPosts(res.results);
+    }).catch((err: any) => {
+      console.log(err);
+    })
+  }
+  
   return (
     <VStack spacing={4} width="full">
-      <PostsActionComponent/>
+      <PostsActionComponent refresh={fetchPosts}/>
       {posts.length === 0 && <Text>You've never seen any posts.</Text>}
       {posts.map((post) => (
         <Card
@@ -78,7 +127,7 @@ export default function PostsComponent() {
           <CardHeader>
             <Flex gap={4}>
               <Flex flex='1' gap='4' alignItems='center' flexWrap='wrap'>
-                <Avatar name={post.profile.fullName} src={post.profile.avartar} />
+                <Avatar name={post.profile.fullName} src={post.profile.avatar} />
                 <Box>
                   <Heading size='sm'>{post.profile.fullName}</Heading>
                   <Text>{post.profile.position}</Text>

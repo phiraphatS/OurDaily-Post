@@ -20,6 +20,7 @@
     "filepond": "^4.30.6",
     "formik": "^2.4.5",
     "framer-motion": "^11.0.3",
+    "ibm-cos-sdk": "^1.13.3",
     "next": "^14.1.0",
     "next-nprogress-bar": "^2.1.2",
     "react": "^18.2.0",
