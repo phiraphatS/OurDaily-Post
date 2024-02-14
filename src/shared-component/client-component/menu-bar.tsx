@@ -1,18 +1,66 @@
 'use client'
 import React, { useTransition } from "react";
-import { Box, Link, Flex, Button, useDisclosure, Drawer, DrawerOverlay, DrawerContent, DrawerCloseButton, DrawerHeader, DrawerBody, VStack } from "@chakra-ui/react";
+import { Box, Flex, Text, Button, useDisclosure, Drawer, DrawerOverlay, DrawerContent, DrawerCloseButton, DrawerHeader, DrawerBody, VStack, Avatar, Heading, AvatarBadge, Stack, AvatarGroup } from "@chakra-ui/react";
+import { useRouter } from "next-nprogress-bar"
 import { HamburgerIcon } from "@chakra-ui/icons";
 import { useScrollYPosition } from "react-use-scroll-position";
 
-const MenuItems = ({ children }: any) => (
-  <Link mt={{ base: 4, md: 0 }} mr={6} display="block">
-    {children}
-  </Link>
-);
+const user = [
+  {
+    username: "Bam",
+    position: "Girlfriend",
+    url: "",
+    status: "Online"
+  },
+  {
+    username: "Sue",
+    position: "Boyfriend",
+    url: "",
+    status: "Offline"
+  }
+];
+
+const menuList = [
+  {
+    name: "First Page",
+    url: "/"
+  },
+  {
+    name: "Congratulation",
+    url: "/congratulation"
+  },
+  {
+    name: "Feeds",
+    url: "/feeds"
+  }
+];
 
 export default function ResponsiveMenuBar({ children }: Readonly<{ children: React.ReactNode }>) {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const router = useRouter();
+
   const scrollY = useScrollYPosition();
+  const Link = ({ children, ...props }: any) => {
+    return (
+      <Button
+        className="menu-link"
+        variant="link"
+        onClick={() => {
+          onClose();
+          router.push(props.href);
+        }}
+      >
+        {children}
+      </Button>
+    );
+  }
+
+  const MenuItems = ({ children, href }: any) => (
+    <Link mt={{ base: 4, md: 0 }} mr={6} display="block" href={href}>
+      {children}
+    </Link>
+  );
+
 
   return (
     <>
@@ -32,14 +80,18 @@ export default function ResponsiveMenuBar({ children }: Readonly<{ children: Rea
               <HamburgerIcon fontSize={24} />
             </Box>
             <Box display={{ base: "none", md: "flex" }}>
-              <MenuItems>Home</MenuItems>
-              <MenuItems>About</MenuItems>
-              <MenuItems>Contact</MenuItems>
+              {menuList.map((menu, i) => (
+                <MenuItems key={i} href={menu.url}>{menu.name}</MenuItems>
+              ))}
             </Box>
           </Flex>
-          <Button bg="transparent" border="1px">
-            Login
-          </Button>
+          <AvatarGroup size='sm' max={2}>
+            {user.map((u, i) => (
+              <Avatar key={i} name={u.username} src={u.url} size={"sm"}>
+                <AvatarBadge boxSize='1em' bg={u.status === "Online" ? "green.500" : "red.500"} />
+              </Avatar>
+            ))}
+          </AvatarGroup>
 
           <Drawer isOpen={isOpen} placement="top" onClose={onClose}>
             <DrawerOverlay>
@@ -48,9 +100,9 @@ export default function ResponsiveMenuBar({ children }: Readonly<{ children: Rea
                 <DrawerHeader>Menu</DrawerHeader>
                 <DrawerBody>
                   <VStack spacing={4} align="start" pb={5}>
-                    <MenuItems><pre>Home</pre></MenuItems>
-                    <MenuItems><pre>About</pre></MenuItems>
-                    <MenuItems><pre>Contact</pre></MenuItems>
+                    {menuList.map((menu, i) => (
+                      <MenuItems key={i} href={menu.url}>{menu.name}</MenuItems>
+                    ))}
                   </VStack>
                 </DrawerBody>
               </DrawerContent>

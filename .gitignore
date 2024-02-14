@@ -1,1 +1,21 @@
-node_modules
+### NextJS ###
+# dependencies
+/node_modules
+/.pnp
+.pnp.js
+
+# testing
+/coverage
+
+# next.js
+/.next/
+/out/
+
+# Optional REPL history
+.node_repl_history
+.next
+
+/dist
+.DS_Store
+.AppleDouble
+.LSOverride

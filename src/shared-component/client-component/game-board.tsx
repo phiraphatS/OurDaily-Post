@@ -1,6 +1,6 @@
 'use client'
 import styles from '@/styles/share-component.module.scss'
-import { useRouter } from 'next/navigation';
+import { useRouter } from 'next-nprogress-bar';
 import React from 'react'
 
 const defaultState = {
