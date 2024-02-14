@@ -33,6 +33,7 @@ export default function PostsActionComponent(props: { refresh: () => void }) {
         console.log(res);
         // reset form, filepond, and close drawer
         formik.resetForm();
+        props.refresh();
         onClose();
       }).catch((err: any) => {
         console.log(err);
