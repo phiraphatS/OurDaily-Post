@@ -1,22 +1,59 @@
 import { HStack, Button, useDisclosure, Drawer, DrawerBody, DrawerFooter, DrawerOverlay, DrawerContent, DrawerCloseButton, Textarea, VStack, FormControl, FormLabel, DrawerHeader, Input, InputGroup, Box } from '@chakra-ui/react'
 import { AttachmentIcon } from '@chakra-ui/icons';
-import React, { useRef } from 'react'
+import React, { useRef, useState } from 'react'
 import { useFormik } from 'formik';
 import { FilePond, registerPlugin } from 'react-filepond';
+import IBMServices from '@/_helpers/ibm-cloud';
+import { postService } from '@/_services/post-service';
+import { FilePondFile } from 'filepond';
 
+const IMB = new IBMServices();
+interface IFormValues {
+  contentText: string;
+  imgUrl: {key: string, url: string}[];
+  imgfile: any[];
+}
 
-export default function PostsActionComponent() {
+export default function PostsActionComponent(props: { refresh: () => void }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
-
+  const initialValues: IFormValues = {
+    contentText: '',
+    imgUrl: [],
+    imgfile: []
+  }
   const formik = useFormik({
-    initialValues: {
-      contentText: '',
-      imgfile: [],
-    },
-    onSubmit: (values) => {
-      console.log('values', values);
+    initialValues: initialValues,
+    onSubmit: async (values) => {
+      const params = {
+        contentText: values.contentText,
+        imgUrl: values.imgUrl
+      }
+
+      postService.postNow(params).then((res: any) => {
+        console.log(res);
+        // reset form, filepond, and close drawer
+        formik.resetForm();
+        onClose();
+      }).catch((err: any) => {
+        console.log(err);
+      });
     }
   });
+
+  const filePonServerProcess = async (fieldName: string, file: any, metadata: any, load: any, error: any, progress: any, abort: any) => {
+    await postService.uploadFile(file).then((res: any) => {
+      if(res.status === true) {
+        const key = res.results.Key;
+        const location = res.results.Location;
+        formik.setFieldValue('imgUrl', [...formik.values.imgUrl, {key: key, url: location}]);
+        load(res.results);
+      } else {
+        error('Upload failed');
+      }
+    }).catch((err: any) => {
+      error('Upload failed');
+    });
+  }
 
   const postDrawerOpen = () => {
     onOpen();
@@ -58,13 +95,20 @@ export default function PostsActionComponent() {
                 <Box padding={2} />
                 {/* uploadfile */}
                 <FilePond
-                  files={formik.values.imgfile}
-                  onupdatefiles={(fileList) => formik.setFieldValue('imgfile', fileList)}
+                  // files={formik.values.imgfile}
+                  onremovefile={(err:any, file: FilePondFile) => {
+                    if(formik.values.imgUrl.length === 0) return;
+                    const newImgUrl = formik.values.imgUrl.filter(({ key }) => key !== file.filename);
+                    formik.setFieldValue('imgUrl', newImgUrl);
+                  }}
                   allowMultiple={true}
                   maxFiles={3}
-                  name="imgfile"
+                  // name="imgfile"
                   labelIdle='Drop or Upload Image.'
                   credits={false}
+                  server={{
+                    process: filePonServerProcess,
+                  }}
                 />
               </DrawerBody>
 
