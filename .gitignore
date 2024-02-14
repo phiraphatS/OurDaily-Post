@@ -11,7 +11,10 @@
 /.next/
 /out/
 
-# Optional REPL history
+.next/
+.swc/
+.*.env
+
 .node_repl_history
 .next
 
