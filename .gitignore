@@ -11,6 +11,13 @@
 /.next/
 /out/
 
+node_modules/
+.next/
+.swc/
+.*.env
+
+.node_repl_history
+.next
 
 /dist
 .DS_Store
