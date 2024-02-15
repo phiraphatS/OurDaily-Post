@@ -30,9 +30,9 @@ export default function CarouselComponent() {
         transitionTime={1300}
       >
         {[
-          "https://via.placeholder.com/800x400?text=First+Slide",
-          "https://via.placeholder.com/800x400?text=Second+Slide",
-          "https://via.placeholder.com/800x400?text=Third+Slide"
+          "https://cloud-object-storage-cos-standard-tni.s3.jp-tok.cloud-object-storage.appdomain.cloud/Screenshot_20230804_184157_Instagram.jpg",
+          "https://cloud-object-storage-cos-standard-tni.s3.jp-tok.cloud-object-storage.appdomain.cloud/Screenshot_20230815_154844_Instagram.jpg",
+          "https://cloud-object-storage-cos-standard-tni.s3.jp-tok.cloud-object-storage.appdomain.cloud/Screenshot_20230827_094955_Instagram.jpg"
         ].map((src, index) => (
           <div key={index}>
             <Image 

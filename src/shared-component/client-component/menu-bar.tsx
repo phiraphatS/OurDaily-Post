@@ -92,7 +92,7 @@ export default function ResponsiveMenuBar({ children }: Readonly<{ children: Rea
             ))}
           </AvatarGroup>
 
-          <Drawer isOpen={isOpen} placement="top" onClose={onClose}>
+          <Drawer isOpen={isOpen} placement="left" onClose={onClose}>
             <DrawerOverlay>
               <DrawerContent>
                 <DrawerCloseButton />
