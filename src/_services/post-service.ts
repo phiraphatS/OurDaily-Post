@@ -6,6 +6,7 @@ export const postService = {
     postNow,
     uploadFile,
     getFeeds,
+    likePost,
 }
 
 async function getFeeds(params: any) {
@@ -30,6 +31,19 @@ async function postNow(params: any) {
         body: JSON.stringify(params)
     };
     return fetch(`${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/feeds/post-now`, requestOptions)
+    .then(handleResponse)
+    .then(res => {
+        return res;
+    });
+}
+
+async function likePost(params: any) {
+    const requestOptions = {
+        method: "POST",
+        headers: authHeader(),
+        body: JSON.stringify(params)
+    };
+    return fetch(`${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/feeds/like-post`, requestOptions)
     .then(handleResponse)
     .then(res => {
         return res;

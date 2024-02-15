@@ -30,7 +30,7 @@ export default function PostsActionComponent(props: { refresh: () => void }) {
       }
 
       postService.postNow(params).then((res: any) => {
-        console.log(res);
+        // console.log(res);
         // reset form, filepond, and close drawer
         formik.resetForm();
         props.refresh();
@@ -59,10 +59,6 @@ export default function PostsActionComponent(props: { refresh: () => void }) {
   const postDrawerOpen = () => {
     onOpen();
   }
-
-  const handleUploadClick = () => {
-    // open 
-  };
 
   return (
     <>

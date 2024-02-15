@@ -1,11 +1,7 @@
 'use client'
 import React, { useEffect, useRef, useState } from 'react';
-import { Box, Text, Textarea, Button, VStack, HStack, Avatar, Card, CardBody, CardFooter, CardHeader, Flex, Heading, IconButton } from '@chakra-ui/react';
-import { useFormik } from "formik";
-import { AttachmentIcon } from '@chakra-ui/icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faImages } from '@fortawesome/free-solid-svg-icons';
-import { BiLike, BiChat, BiShare } from 'react-icons/bi';
+import { Box, Text, Textarea, Button, VStack, HStack, Avatar, Card, CardBody, CardFooter, CardHeader, Flex, Heading, IconButton, AvatarBadge, AvatarGroup } from '@chakra-ui/react';
+import { BiLike, BiChat, BiShare, BiHeart, BiSolidHeart } from 'react-icons/bi';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import { Image } from '@chakra-ui/react';
 import { Grid, GridItem } from "@chakra-ui/react";
@@ -24,6 +20,20 @@ interface Post {
     fullName: string;
     position: string;
   };
+  action: {
+    like: {
+      id: number;
+      avatar: string;
+      fullName: string;
+    }[];
+    comment: {
+      id: number;
+      avatar: string;
+      fullName: string;
+    }[];
+    // share: number;
+  }
+  isLiked: boolean;
 }
 
 const mockPosts: Post[] = [];
@@ -54,6 +64,68 @@ export default function PostsComponent() {
     })
   }
 
+  const likePost = (postId: number) => {
+    const backupAction = posts.find((post) => post.id === postId)?.action || {
+      like: [],
+      comment: [],
+    };
+    setPosts(posts.map((post) => (
+      post.id === postId ? { ...post, isLiked: !post.isLiked } : post
+    )))
+
+    const params = {
+      post_id: postId
+    }
+    postService.likePost(params).then((res: any) => {
+      if (res && res.status === true) {
+        const isLiked = res.results.isLike;
+        const user = res.results.user;
+        setPosts(posts.map((post) => (
+          post.id === postId ? {
+            ...post, isLiked: isLiked, action: post.action ? {
+              ...post.action,
+              like: isLiked ? [user, ...post.action.like] : post.action.like.filter((u) => u.id !== user.id),
+            } : {
+              like: [],
+              comment: [],
+            }
+          } : post
+        )))
+      } else {
+        throw new Error('Failed to like post');
+      }
+    }).catch((err: any) => {
+      console.log(err);
+      setPosts(posts.map((post) => (
+        post.id === postId ? { ...post, isLiked: !post.isLiked, action: backupAction } : post
+      )))
+    })
+  }
+
+  const avatarActionGroup = (like: any[]) => {
+    return <>
+      {like && like.length > 0 && (
+        <AvatarGroup
+          size='xs'
+          max={2}
+          position='absolute'
+          bottom='0'
+          left='70%'
+          transform='translateX(-50%)'
+        >
+          {like.map(({ id, avatar, fullName }) => (
+            <Avatar 
+              key={id} 
+              name={fullName} 
+              src={avatar} 
+              className='fade-in'
+            />
+          ))}
+        </AvatarGroup>
+      )}
+    </>
+  }
+
   return (
     <VStack spacing={4} width="full" >
       <PostsActionComponent refresh={fetchPosts} />
@@ -70,7 +142,7 @@ export default function PostsComponent() {
                 <Avatar name={post.profile.fullName} src={post.profile.avatar} />
                 <Box>
                   <Heading size='sm'>{post.profile.fullName}</Heading>
-                  <Text>{post.profile.position} <span>{ postTime(post.createdAt) }</span></Text>
+                  <Text>{post.profile.position} <span>{postTime(post.createdAt)}</span></Text>
                 </Box>
               </Flex>
               <IconButton
@@ -81,11 +153,13 @@ export default function PostsComponent() {
               />
             </Flex>
           </CardHeader>
-          <CardBody>
-            <Text>
-              {post.content}
-            </Text>
-          </CardBody>
+          {post.content && post.content.length > 0 && (
+            <CardBody>
+              <Text>
+                {post.content}
+              </Text>
+            </CardBody>
+          )}
 
           {post.img.length > 0 && (<>
             <CardBody>
@@ -176,14 +250,32 @@ export default function PostsComponent() {
               },
             }}
           >
-            <Button flex='1' variant='ghost' leftIcon={<BiLike />}>
-              {/* Like */}
+            {post.isLiked ? (
+              <Button
+                flex='1'
+                variant='ghost'
+                onClick={() => likePost(post.id)}
+                position='relative'
+              >
+                <BiSolidHeart color='red' />
+                {avatarActionGroup(post.action?.like || [])}
+              </Button>
+            ) : (
+              <Button 
+                flex='1' 
+                variant='ghost' 
+                onClick={() => likePost(post.id)}
+                position='relative'
+              >
+                <BiHeart />
+                {avatarActionGroup(post.action?.like || [])}
+              </Button>
+            )}
+            <Button flex='1' variant='ghost'>
+              <BiChat />
             </Button>
-            <Button flex='1' variant='ghost' leftIcon={<BiChat />}>
-              {/* Comment */}
-            </Button>
-            <Button flex='1' variant='ghost' leftIcon={<BiShare />}>
-              {/* Share */}
+            <Button flex='1' variant='ghost'>
+              <BiShare />
             </Button>
           </CardFooter>
         </Card>

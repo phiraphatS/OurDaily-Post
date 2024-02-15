@@ -72,7 +72,7 @@ export default function CarouselComponent() {
         flexDirection="column"
         gap={4}
         >
-        <h1 style={{ fontSize: "1.3rem", fontWeight: "bolder" }}>Pitchanan Boontan</h1>
+        <h1 style={{ fontSize: "1.3rem", fontWeight: "bolder" }}>Pitchanan Boonthan</h1>
         <span>Now time to see my gift for you</span>
         <Button colorScheme='pink' variant="solid" onClick={goToFeed}>
           Let's Start
