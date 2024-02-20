@@ -103,7 +103,7 @@ export default function PostsComponent() {
     }
 
     return (<>
-        <VStack spacing={4} width="full" >
+        <VStack spacing={4} width="full" paddingLeft={3} paddingRight={3}>
             <PostsActionComponent refresh={fetchPosts} />
             {posts.length === 0 && <Text>You've never seen any posts.</Text>}
             {posts.map((post) => (
