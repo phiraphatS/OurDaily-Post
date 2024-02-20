@@ -7,6 +7,8 @@ export const postService = {
     uploadFile,
     getFeeds,
     likePost,
+    commentPost,
+    getCommentPost,
 }
 
 async function getFeeds(params: any) {
@@ -44,6 +46,34 @@ async function likePost(params: any) {
         body: JSON.stringify(params)
     };
     return fetch(`${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/feeds/like-post`, requestOptions)
+    .then(handleResponse)
+    .then(res => {
+        return res;
+    });
+}
+
+async function commentPost(params: any) {
+    const requestOptions = {
+        method: "POST",
+        headers: authHeader(),
+        body: JSON.stringify(params)
+    };
+    return fetch(`${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/feeds/comment-post`, requestOptions)
+    .then(handleResponse)
+    .then(res => {
+        return res;
+    });
+}
+
+async function getCommentPost(params: any) {
+    const requestOptions = {
+        method: "GET",
+        headers: authHeader(),
+    };
+    
+    const queryString = serviceFunction.generateQueryString(params);
+    const urlEnpoint = `${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/feeds/get-comments?${queryString}`;
+    return fetch(urlEnpoint, requestOptions)
     .then(handleResponse)
     .then(res => {
         return res;
