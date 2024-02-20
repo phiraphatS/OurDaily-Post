@@ -1,6 +1,6 @@
 'use client'
 import React, { useEffect, useRef, useState } from 'react';
-import { Box, Text, Textarea, Button, VStack, HStack, Avatar, Card, CardBody, CardFooter, CardHeader, Flex, Heading, IconButton, AvatarBadge, AvatarGroup } from '@chakra-ui/react';
+import { Box, Text, Textarea, Button, VStack, HStack, Avatar, Card, CardBody, CardFooter, CardHeader, Flex, Heading, IconButton, AvatarBadge, AvatarGroup, useDisclosure } from '@chakra-ui/react';
 import { BiLike, BiChat, BiShare, BiHeart, BiSolidHeart } from 'react-icons/bi';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import { Image } from '@chakra-ui/react';
@@ -8,7 +8,7 @@ import { Grid, GridItem } from "@chakra-ui/react";
 import PostsActionComponent from './posts-action';
 import { postService } from '@/_services/post-service';
 import moment from 'moment';
-
+import CommentDrawerComponent from './comment-drawer';
 
 interface Post {
   id: number;
@@ -43,8 +43,9 @@ export default function PostsComponent() {
     page: 1,
     limit: 10
   });
+  const { isOpen: isCommentOpen, onOpen: onCommentOpen, onClose: onCommentClose } = useDisclosure();
 
-  const postTime = (createdDate: Date) => {
+  const fromNow = (createdDate: Date) => {
     return moment(createdDate).fromNow()
   };
 
@@ -102,6 +103,10 @@ export default function PostsComponent() {
     })
   }
 
+  const commentPost = () => {
+    onCommentOpen();
+  }
+
   const avatarActionGroup = (like: any[]) => {
     return <>
       {like && like.length > 0 && (
@@ -126,7 +131,7 @@ export default function PostsComponent() {
     </>
   }
 
-  return (
+  return ( <>
     <VStack spacing={4} width="full" >
       <PostsActionComponent refresh={fetchPosts} />
       {posts.length === 0 && <Text>You've never seen any posts.</Text>}
@@ -142,7 +147,7 @@ export default function PostsComponent() {
                 <Avatar name={post.profile.fullName} src={post.profile.avatar} />
                 <Box>
                   <Heading size='sm'>{post.profile.fullName}</Heading>
-                  <Text>{post.profile.position} <span>{postTime(post.createdAt)}</span></Text>
+                  <Text>{post.profile.position} <span>{fromNow(post.createdAt)}</span></Text>
                 </Box>
               </Flex>
               <IconButton
@@ -271,7 +276,7 @@ export default function PostsComponent() {
                 {avatarActionGroup(post.action?.like || [])}
               </Button>
             )}
-            <Button flex='1' variant='ghost'>
+            <Button flex='1' variant='ghost' onClick={commentPost}>
               <BiChat />
             </Button>
             <Button flex='1' variant='ghost'>
@@ -280,6 +285,10 @@ export default function PostsComponent() {
           </CardFooter>
         </Card>
       ))}
+      
     </VStack>
+
+    <CommentDrawerComponent isOpen={isCommentOpen} onClose={onCommentClose} />
+  </>
   )
 }
