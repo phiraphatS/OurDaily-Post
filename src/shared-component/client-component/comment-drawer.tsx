@@ -21,6 +21,7 @@ interface IFormValues {
 interface IProps {
     isOpen: boolean;
     postId: number;
+    updateCommentCount: (count: number) => void;
     onClose: () => void;
 }
 
@@ -43,7 +44,7 @@ const getComments = async (postId: number) => {
     return postService.getCommentPost(param)
 }
 
-export default function CommentDrawerComponent({ isOpen, postId, onClose }: IProps) {
+export default function CommentDrawerComponent({ isOpen, postId, onClose, updateCommentCount }: IProps) {
 
     // Access the client
     const queryClient = useQueryClient()
@@ -78,6 +79,7 @@ export default function CommentDrawerComponent({ isOpen, postId, onClose }: IPro
         onSubmit: async (values) => {
             mutation.mutate(undefined, {
                 onSuccess: () => {
+                    updateCommentCount(results.length + 1);
                     formik.resetForm();
                 }
             });
@@ -112,12 +114,6 @@ export default function CommentDrawerComponent({ isOpen, postId, onClose }: IPro
                     </DrawerHeader>
                     <DrawerBody>
                         <VStack overflow={'auto'} maxH="50vh" width={'full'}>
-                            {(isFetching || mutation.isPending) && (
-                                <Box width={'full'} bg='white' display={'flex'} flexDirection={'column'}>
-                                    {/* <SkeletonCircle size='10' /> */}
-                                    <SkeletonText mt='4' noOfLines={2} spacing='4' skeletonHeight='2' />
-                                </Box>
-                            )}
                             {/* mockup comment */}
                             {results && results.map((comment: IComment, i: number) => (
                                 <Box key={comment.id} padding={2} width="full">
@@ -133,6 +129,12 @@ export default function CommentDrawerComponent({ isOpen, postId, onClose }: IPro
                                     </Box>
                                 </Box>
                             ))}
+                            {(isFetching || mutation.isPending) && (
+                                <Box width={'full'} bg='white' display={'flex'} flexDirection={'column'}>
+                                    {/* <SkeletonCircle size='10' /> */}
+                                    <SkeletonText mt='4' noOfLines={2} spacing='4' skeletonHeight='2' />
+                                </Box>
+                            )}
 
                             {/* {isFetching && (<Text fontSize='sm'>
                                 <Spinner

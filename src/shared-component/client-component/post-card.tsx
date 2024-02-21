@@ -34,6 +34,7 @@ interface IPost {
 
 interface IProps {
     post: IPost;
+    setPosts: React.Dispatch<React.SetStateAction<IPost[]>>;
     onLike: (postId: number) => void;
 }
 
@@ -71,6 +72,16 @@ export default function PostCardComponent(props: IProps) {
                 </AvatarGroup>
             )}
         </>
+    }
+
+    const updateCommentCount = (count: number) => {
+        const postId = props.post.id;
+        const { setPosts } = props;
+        setPosts((pre) => (
+            pre.map((post) => (
+                post.id === postId ? { ...post, action: { ...post.action, commentCount: count } } : post
+            ))
+        ))
     }
 
     return (
@@ -230,7 +241,7 @@ export default function PostCardComponent(props: IProps) {
                 </Button>
             </CardFooter>
             { isCommentOpen && (
-                <CommentDrawerComponent isOpen={isCommentOpen} onClose={onCommentClose} postId={post.id} />
+                <CommentDrawerComponent isOpen={isCommentOpen} onClose={onCommentClose} postId={post.id} updateCommentCount={updateCommentCount} />
             )}
         </Card>
     )

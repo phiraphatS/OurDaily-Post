@@ -107,7 +107,7 @@ export default function PostsComponent() {
             <PostsActionComponent refresh={fetchPosts} />
             {posts.length === 0 && <Text>You've never seen any posts.</Text>}
             {posts.map((post) => (
-                <PostCardComponent post={post} onLike={likePost} key={post.id}/>
+                <PostCardComponent post={post} onLike={likePost} setPosts={setPosts} key={post.id}/>
             ))}
         </VStack>
 
