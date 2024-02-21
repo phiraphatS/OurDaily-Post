@@ -4,6 +4,8 @@ import React from 'react'
 import { BiSolidHeart, BiHeart, BiChat, BiShare } from 'react-icons/bi';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import CommentDrawerComponent from './comment-drawer';
+import PostHeaderMenu from './post-header-menu';
+import { postService } from '@/_services/post-service';
 
 interface IPost {
     id: number;
@@ -11,6 +13,7 @@ interface IPost {
     img: string[];
     createdAt: Date;
     profile: {
+        id: number;
         avatar: string;
         fullName: string;
         position: string;
@@ -42,6 +45,7 @@ export default function PostCardComponent(props: IProps) {
     const { post, onLike } = props;
     const { isOpen: isCommentOpen, onOpen: onCommentOpen, onClose: onCommentClose } = useDisclosure();
 
+    const isPersonal = post.profile.id === 2;
     const fromNow = (createdDate: Date) => {
         return moment(createdDate).fromNow()
     };
@@ -84,11 +88,31 @@ export default function PostCardComponent(props: IProps) {
         ))
     }
 
+    const lookPost = () => {
+        console.log(post);
+    }
+
+    const deletePost = () => {
+        const params = {
+            post_id: post.id
+        }
+
+        postService.deletePost(params).then((res: any) => {
+            if (res.status === true) {
+                const setPosts = props.setPosts;
+                setPosts((pre) => (
+                    pre.filter((post) => post.id !== params.post_id)
+                ))
+            }
+        })
+    }
+
     return (
         <Card
             maxW='lg'
             width='full'
             key={post.id}
+            transition={'all 0.5s'}
         >
             <CardHeader>
                 <Flex gap={4}>
@@ -99,12 +123,7 @@ export default function PostCardComponent(props: IProps) {
                             <Text>{post.profile.position} <span>{fromNow(post.createdAt)}</span></Text>
                         </Box>
                     </Flex>
-                    <IconButton
-                        variant='ghost'
-                        colorScheme='gray'
-                        aria-label='See menu'
-                        icon={<BsThreeDotsVertical />}
-                    />
+                    <PostHeaderMenu lookPost={lookPost} deletePost={deletePost} isPersonal={isPersonal} />
                 </Flex>
             </CardHeader>
             {post.content && post.content.length > 0 && (

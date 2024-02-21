@@ -10,6 +10,7 @@ import moment from 'moment';
 import CommentDrawerComponent from './comment-drawer';
 import PostCardComponent from './post-card';
 import { useInView } from 'react-intersection-observer'
+import PostCardSkeletonsComponent from './post-card-skeleton';
 
 interface IPost {
     id: number;
@@ -17,6 +18,7 @@ interface IPost {
     img: string[];
     createdAt: Date;
     profile: {
+        id: number;
         avatar: string;
         fullName: string;
         position: string;
@@ -52,9 +54,15 @@ export default function PostsComponent() {
         }
     }, [inView])
 
-    const fetchPosts = () => {
+    const fetchPosts = (isResetPagination?: boolean) => {
+        const offsetParams = isResetPagination ? 0 : offset;
+        if (isResetPagination) {
+            setOffset(0);
+            setIsEnd(false);
+        }
+        
         const pagination = {
-            offset: offset,
+            offset: offsetParams,
             limit: numberOfFetch
         }
         postService.getFeeds(pagination).then((res: any) => {
@@ -62,7 +70,10 @@ export default function PostsComponent() {
                 setIsEnd(true);
                 return;
             }
-            setPosts(pre => ([...pre, ...res.results]));
+            if (isResetPagination)
+                setPosts(res.results);
+            else
+                setPosts(pre => ([...pre, ...res.results]));
             setOffset(offset + numberOfFetch);
         }).catch((err: any) => {
             console.log(err);
@@ -110,38 +121,22 @@ export default function PostsComponent() {
     }
 
     return (<>
-        <VStack spacing={4} width="full" paddingLeft={3} paddingRight={3}>
-            <PostsActionComponent refresh={fetchPosts} />
+        <VStack 
+            spacing={4} 
+            width="full" 
+            paddingLeft={3} 
+            paddingRight={3}
+            style={{ transition: 'all 0.5s' }}
+        >
+            <PostsActionComponent refresh={() => fetchPosts(true)} />
             {posts.length === 0 && <Text>You've never seen any posts.</Text>}
             {posts.map((post) => (
                 <PostCardComponent post={post} onLike={likePost} setPosts={setPosts} key={post.id} />
             ))}
             {!isEnd && (
-                <Card
-                    maxW='lg'
-                    width='full'
-                    ref={ref}
-                >
-                    <CardHeader>
-                        <Flex gap={4}>
-                            <Flex flex='1' gap='4' alignItems='center' flexWrap='wrap'>
-                                <SkeletonCircle size='12' />
-                                <Box width={'60%'}>
-                                    <SkeletonText noOfLines={2} spacing='4' skeletonHeight='3' />
-                                </Box>
-                            </Flex>
-                        </Flex>
-                    </CardHeader>
-                    <CardBody>
-                        <SkeletonText mt='4' noOfLines={2} spacing='4' skeletonHeight='2' />
-                    </CardBody>
-                    {/* <CardBody>
-                        <Skeleton
-                            height='300px'
-                            width='100%'
-                        />
-                    </CardBody> */}
-                </Card>
+                <Box ref={ref} width="full">
+                    <PostCardSkeletonsComponent/>
+                </Box>
             )}
         </VStack>
 

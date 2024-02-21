@@ -8,6 +8,7 @@ export const postService = {
     getFeeds,
     likePost,
     commentPost,
+    deletePost,
     getCommentPost,
 }
 
@@ -74,6 +75,19 @@ async function getCommentPost(params: any) {
     const queryString = serviceFunction.generateQueryString(params);
     const urlEnpoint = `${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/feeds/get-comments?${queryString}`;
     return fetch(urlEnpoint, requestOptions)
+    .then(handleResponse)
+    .then(res => {
+        return res;
+    });
+}
+
+async function deletePost(params: any) {
+    const requestOptions = {
+        method: "Post",
+        headers: authHeader(),
+        body: JSON.stringify(params)
+    };
+    return fetch(`${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/feeds/delete-post`, requestOptions)
     .then(handleResponse)
     .then(res => {
         return res;
