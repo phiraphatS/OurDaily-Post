@@ -74,7 +74,11 @@ export default function PostsComponent() {
                 setPosts(res.results);
             else
                 setPosts(pre => ([...pre, ...res.results]));
-            setOffset(offset + numberOfFetch);
+
+            if (res.results.length < numberOfFetch)
+                setIsEnd(true);
+            else
+                setOffset(offset + numberOfFetch);
         }).catch((err: any) => {
             console.log(err);
         })
