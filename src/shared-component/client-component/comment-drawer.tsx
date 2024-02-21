@@ -97,6 +97,7 @@ export default function CommentDrawerComponent({ isOpen, postId, onClose, update
         onClose();
     }
 
+    const test = "";
     return (
         <Drawer
             isOpen={isOpen}
