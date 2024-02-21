@@ -1,6 +1,6 @@
 'use client'
 import React, { useEffect, useRef, useState } from 'react';
-import { Image, Box, Text, Textarea, Button, VStack, HStack, Avatar, Card, CardBody, CardFooter, CardHeader, Flex, Heading, IconButton, AvatarBadge, AvatarGroup, useDisclosure } from '@chakra-ui/react';
+import { Image, Box, Text, Textarea, Button, VStack, HStack, Avatar, Card, CardBody, CardFooter, CardHeader, Flex, Heading, IconButton, AvatarBadge, AvatarGroup, useDisclosure, Skeleton, SkeletonText, SkeletonCircle } from '@chakra-ui/react';
 import { BiLike, BiChat, BiShare, BiHeart, BiSolidHeart } from 'react-icons/bi';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import { Grid, GridItem } from "@chakra-ui/react";
@@ -9,6 +9,7 @@ import { postService } from '@/_services/post-service';
 import moment from 'moment';
 import CommentDrawerComponent from './comment-drawer';
 import PostCardComponent from './post-card';
+import { useInView } from 'react-intersection-observer'
 
 interface IPost {
     id: number;
@@ -37,26 +38,32 @@ interface IPost {
     isLiked: boolean;
 }
 
+const numberOfFetch = 10;
 const mockPosts: IPost[] = [];
 export default function PostsComponent() {
     const [posts, setPosts] = useState<IPost[]>(mockPosts);
-    const [pagination, setPagination] = useState({
-        page: 1,
-        limit: 10
-    });
-
+    const [offset, setOffset] = useState(0);
+    const [isEnd, setIsEnd] = useState(false);
+    const { ref, inView } = useInView();
 
     useEffect(() => {
-        fetchPosts()
-
-        return () => {
-            //cleanup
+        if (inView) {
+            fetchPosts()
         }
-    }, [])
+    }, [inView])
 
     const fetchPosts = () => {
+        const pagination = {
+            offset: offset,
+            limit: numberOfFetch
+        }
         postService.getFeeds(pagination).then((res: any) => {
-            setPosts(res.results);
+            if (res.results.length === 0) {
+                setIsEnd(true);
+                return;
+            }
+            setPosts(pre => ([...pre, ...res.results]));
+            setOffset(offset + numberOfFetch);
         }).catch((err: any) => {
             console.log(err);
         })
@@ -107,8 +114,35 @@ export default function PostsComponent() {
             <PostsActionComponent refresh={fetchPosts} />
             {posts.length === 0 && <Text>You've never seen any posts.</Text>}
             {posts.map((post) => (
-                <PostCardComponent post={post} onLike={likePost} setPosts={setPosts} key={post.id}/>
+                <PostCardComponent post={post} onLike={likePost} setPosts={setPosts} key={post.id} />
             ))}
+            {!isEnd && (
+                <Card
+                    maxW='lg'
+                    width='full'
+                    ref={ref}
+                >
+                    <CardHeader>
+                        <Flex gap={4}>
+                            <Flex flex='1' gap='4' alignItems='center' flexWrap='wrap'>
+                                <SkeletonCircle size='12' />
+                                <Box width={'60%'}>
+                                    <SkeletonText noOfLines={2} spacing='4' skeletonHeight='3' />
+                                </Box>
+                            </Flex>
+                        </Flex>
+                    </CardHeader>
+                    <CardBody>
+                        <SkeletonText mt='4' noOfLines={2} spacing='4' skeletonHeight='2' />
+                    </CardBody>
+                    {/* <CardBody>
+                        <Skeleton
+                            height='300px'
+                            width='100%'
+                        />
+                    </CardBody> */}
+                </Card>
+            )}
         </VStack>
 
     </>
