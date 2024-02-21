@@ -101,6 +101,7 @@ export default function CommentDrawerComponent({ isOpen, postId, onClose }: IPro
             placement="bottom"
             onClose={destroyOnclose}
             returnFocusOnClose={false}
+            autoFocus={false}
         >
             <DrawerOverlay>
                 <DrawerContent>
