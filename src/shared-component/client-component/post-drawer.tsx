@@ -1,6 +1,6 @@
 'use client';
 import { HStack, Button, Drawer, DrawerBody, DrawerFooter, DrawerOverlay, DrawerContent, Textarea, FormControl, DrawerHeader, Box } from '@chakra-ui/react'
-import React, { } from 'react'
+import React, { useRef } from 'react'
 import { useFormik } from 'formik';
 import { FilePond } from 'react-filepond';
 import { FilePondFile } from 'filepond';
@@ -63,6 +63,7 @@ export default function PostDrawerComponent({ isOpen, refresh, onClose }: IProps
         });
     }
 
+    const isButtonDisabled = formik.values.contentText.length === 0 && formik.values.imgUrl.length === 0;
     return (
         <Drawer
             isOpen={isOpen}
@@ -98,7 +99,7 @@ export default function PostDrawerComponent({ isOpen, refresh, onClose }: IProps
                                 }}
                                 acceptedFileTypes={['jpg', 'jpeg', 'png']}
                                 allowMultiple={true}
-                                maxFiles={3}
+                                maxFiles={6}
                                 // name="imgfile"
                                 labelIdle='Drop or Upload Image.'
                                 credits={false}
@@ -113,7 +114,7 @@ export default function PostDrawerComponent({ isOpen, refresh, onClose }: IProps
                                 {/* <Button leftIcon={<AttachmentIcon />} colorScheme="teal" onClick={handleUploadClick}>
                   Upload Picture
                 </Button> */}
-                                <Button colorScheme="blue" type="submit">
+                                <Button colorScheme="blue" type="submit" isDisabled={isButtonDisabled}>
                                     Post
                                 </Button>
                             </HStack>
