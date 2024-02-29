@@ -5,6 +5,7 @@ import { useFormik } from 'formik';
 import { FilePond } from 'react-filepond';
 import { FilePondFile } from 'filepond';
 import { postService } from '@/_services/post-service';
+// Import the plugin code
 
 interface IFormValues {
     contentText: string;
@@ -95,6 +96,7 @@ export default function PostDrawerComponent({ isOpen, refresh, onClose }: IProps
                                     const newImgUrl = formik.values.imgUrl.filter(({ key }) => key !== file.filename);
                                     formik.setFieldValue('imgUrl', newImgUrl);
                                 }}
+                                acceptedFileTypes={['jpg', 'jpeg', 'png']}
                                 allowMultiple={true}
                                 maxFiles={3}
                                 // name="imgfile"

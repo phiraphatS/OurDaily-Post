@@ -16,23 +16,23 @@ function LoginForm() {
     });
 
     return (
-        <VStack spacing={4} width="400px" p={4} borderWidth={1} borderRadius="lg">
+        <VStack spacing={4} p={4} borderRadius="lg">
             <Box as="h2" fontSize="2xl">Login</Box>
             <form onSubmit={formik.handleSubmit}>
                 <FormControl id="username">
                     <FormLabel>Username</FormLabel>
-                    <Input type="text" {...formik.getFieldProps('username')} />
+                    <Input type="text" {...formik.getFieldProps('username')} isRequired={true} />
                 </FormControl>
                 <FormControl id="password">
                     <FormLabel>Password</FormLabel>
-                    <Input type="password" {...formik.getFieldProps('password')} />
+                    <Input type="password" {...formik.getFieldProps('password')} isRequired={true} />
                 </FormControl>
                 <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
                     <Button mt={4} colorScheme="teal" type="submit">
                         Sign in
                     </Button>
 
-                    <Button mt={4} ml={4} colorScheme="teal" type="button">
+                    <Button mt={4} ml={4} colorScheme="teal" type="button" variant='outline'>
                         Sign up
                     </Button>
                 </Box>
