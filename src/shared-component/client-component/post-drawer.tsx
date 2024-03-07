@@ -3,13 +3,17 @@ import { HStack, Button, Drawer, DrawerBody, DrawerFooter, DrawerOverlay, Drawer
 import React, { useRef } from 'react'
 import { useFormik } from 'formik';
 import { FilePond } from 'react-filepond';
+import * as FilePondAddPlugin from 'filepond';
 import { FilePondFile } from 'filepond';
 import { postService } from '@/_services/post-service';
+import { serviceFunction } from '@/_helpers/service-func';
 // Import the plugin code
+import FilePondPluginImageResize from 'filepond-plugin-image-resize';
 
+FilePondAddPlugin.registerPlugin(FilePondPluginImageResize);
 interface IFormValues {
     contentText: string;
-    imgUrl: { key: string, url: string }[];
+    imgUrl: { key: string, url: string, originalname: string | undefined }[];
     imgfile: any[];
 }
 
@@ -106,11 +110,21 @@ export default function PostDrawerComponent({ isOpen, refresh, onClose }: IProps
                             {/* uploadfile */}
                             <FilePond
                                 // files={formik.values.imgfile}
-                                onremovefile={(err: any, file: FilePondFile) => {
+                                onremovefile={async (err: any, file: FilePondFile) => {
                                     if (formik.values.imgUrl.length === 0) return;
-                                    const newImgUrl = formik.values.imgUrl.filter(({ key }) => key !== file.filename);
-                                    formik.setFieldValue('imgUrl', newImgUrl);
+
+                                    // delete file from server
+                                    await postService.deleteFileS3({ key: file.filename }).then((res: any) => {
+                                        if (res.status === true) {
+                                            const newImgUrl = formik.values.imgUrl.filter(({ originalname }) => originalname !== file.filename);
+                                            formik.setFieldValue('imgUrl', newImgUrl);
+                                        }
+                                    })
                                 }}
+                                imageResizeMode='contain'
+                                allowImageResize={true}
+                                imageResizeTargetHeight={500}
+                                imageResizeTargetWidth={500}
                                 acceptedFileTypes={['jpg', 'jpeg', 'png']}
                                 allowMultiple={true}
                                 maxFiles={6}
@@ -126,8 +140,8 @@ export default function PostDrawerComponent({ isOpen, refresh, onClose }: IProps
                         <DrawerFooter borderTopWidth="1px">
                             <HStack spacing={4} align="stretch">
                                 {/* <Button leftIcon={<AttachmentIcon />} colorScheme="teal" onClick={handleUploadClick}>
-                  Upload Picture
-                </Button> */}
+                                    Upload Picture
+                                </Button> */}
                                 <Button colorScheme="blue" type="submit" isDisabled={isButtonDisabled}>
                                     Post
                                 </Button>

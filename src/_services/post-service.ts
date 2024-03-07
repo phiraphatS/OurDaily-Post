@@ -11,6 +11,7 @@ export const postService = {
     deletePost,
     getCommentPost,
     uploadFileS3,
+    deleteFileS3,
 }
 
 async function getFeeds(params: any) {
@@ -120,5 +121,19 @@ async function uploadFileS3(params: any) {
     .then(handleResponse)
     .catch((err) => {
         throw err;
+    });
+}
+
+async function deleteFileS3(params: any) {
+    const requestOptions = {
+        method: "DELETE",
+        headers: authHeader(),
+    };
+    const queryString = serviceFunction.generateQueryString(params);
+    const urlEnpoint = `${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/uploadfile/delete-s3?${queryString}`;
+    return fetch(urlEnpoint, requestOptions)
+    .then(handleResponse)
+    .then(res => {
+        return res;
     });
 }
