@@ -3,12 +3,9 @@ import { AttachmentIcon } from '@chakra-ui/icons';
 import React, { useRef, useState } from 'react'
 import { useFormik } from 'formik';
 import { FilePond, registerPlugin } from 'react-filepond';
-import IBMServices from '@/_helpers/ibm-cloud';
 import { postService } from '@/_services/post-service';
 import * as yup from 'yup';
 import PostDrawerComponent from './post-drawer';
-
-const IMB = new IBMServices();
 
 export default function PostsActionComponent(props: { refresh: () => void }) {
   const { isOpen, onOpen, onClose } = useDisclosure();

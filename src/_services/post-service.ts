@@ -10,6 +10,7 @@ export const postService = {
     commentPost,
     deletePost,
     getCommentPost,
+    uploadFileS3,
 }
 
 async function getFeeds(params: any) {
@@ -102,6 +103,20 @@ async function uploadFile(params: any) {
         body: formData
     };
     return fetch(`${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/uploadfile/upload`, requestOptions)
+    .then(handleResponse)
+    .catch((err) => {
+        throw err;
+    });
+}
+
+async function uploadFileS3(params: any) {
+    const formData = new FormData();
+    formData.append('file', params);
+    const requestOptions = {
+        method: "POST",
+        body: formData
+    };
+    return fetch(`${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/uploadfile/upload-s3`, requestOptions)
     .then(handleResponse)
     .catch((err) => {
         throw err;

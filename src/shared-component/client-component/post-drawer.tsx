@@ -32,28 +32,42 @@ export default function PostDrawerComponent({ isOpen, refresh, onClose }: IProps
         // validationSchema: validateSchema,
         onSubmit: async (values) => {
             const params = {
-              contentText: values.contentText,
-              imgUrl: values.imgUrl
+                contentText: values.contentText,
+                imgUrl: values.imgUrl
             }
 
             postService.postNow(params).then((res: any) => {
-              // console.log(res);
-              // reset form, filepond, and close drawer
-              formik.resetForm();
-              refresh();
-              onClose();
+                // console.log(res);
+                // reset form, filepond, and close drawer
+                formik.resetForm();
+                refresh();
+                onClose();
             }).catch((err: any) => {
-              console.log(err);
+                console.log(err);
             });
         }
     });
 
     const filePonServerProcess = async (fieldName: string, file: any, metadata: any, load: any, error: any, progress: any, abort: any) => {
-        await postService.uploadFile(file).then((res: any) => {
+        // Ibm services
+        // await postService.uploadFile(file).then((res: any) => {
+        //     if (res.status === true) {
+        //         const key = res.results.Key;
+        //         const location = res.results.Location;
+        //         formik.setFieldValue('imgUrl', [...formik.values.imgUrl, { key: key, url: location }]);
+        //         load(res.results);
+        //     } else {
+        //         error('Upload failed');
+        //     }
+        // }).catch((err: any) => {
+        //     error('Upload failed');
+        // });
+
+        // S3 services
+        await postService.uploadFileS3(file).then((res: any) => {
             if (res.status === true) {
-                const key = res.results.Key;
-                const location = res.results.Location;
-                formik.setFieldValue('imgUrl', [...formik.values.imgUrl, { key: key, url: location }]);
+                const { key, url } = res.results;
+                formik.setFieldValue('imgUrl', [...formik.values.imgUrl, { key: key, url: url }]);
                 load(res.results);
             } else {
                 error('Upload failed');

@@ -1,45 +1,100 @@
 'use client'
 import React from 'react';
-import { useFormik } from 'formik';
 import { Box, Button, FormControl, FormLabel, Input, VStack } from '@chakra-ui/react';
+import { Formik } from "formik";
+import * as Yup from "yup";
+import { useRouter } from 'next-nprogress-bar';
+import { usePathname } from 'next/navigation';
 
-function LoginForm() {
-    const formik = useFormik({
-        initialValues: {
-            username: '',
-            password: '',
-        },
-        onSubmit: (values) => {
-            // Perform login logic here
-            console.log(`Logging in with username: ${values.username} and password: ${values.password}`);
-        },
+interface IStyles {
+    readonly [key: string]: string;
+}
+
+interface IProps {
+    styles: IStyles;
+    errorMessage: string;
+    isSuccessful: boolean;
+}
+
+function LoginForm({ styles }: { styles: IStyles }) {
+    const { replace } = useRouter();
+    const pathname = usePathname();
+
+    const schema = Yup.object().shape({
+        email: Yup.string()
+            .required("Email is a required field")
+            .email("Invalid email format"),
+        password: Yup.string()
+            .required("Password is a required field")
+            .min(8, "Password must be at least 8 characters"),
     });
 
-    return (
-        <VStack spacing={4} p={4} borderRadius="lg">
-            <Box as="h2" fontSize="2xl">Login</Box>
-            <form onSubmit={formik.handleSubmit}>
-                <FormControl id="username">
-                    <FormLabel>Username</FormLabel>
-                    <Input type="text" {...formik.getFieldProps('username')} isRequired={true} />
-                </FormControl>
-                <FormControl id="password">
-                    <FormLabel>Password</FormLabel>
-                    <Input type="password" {...formik.getFieldProps('password')} isRequired={true} />
-                </FormControl>
-                <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
-                    <Button mt={4} colorScheme="teal" type="submit">
-                        Sign in
-                    </Button>
+    const handleSubmit = (values: any) => {
+        // set query params
+        const params = new URLSearchParams();
+        params.append('email', values.email);
+        params.append('password', values.password);
 
-                    <Button mt={4} ml={4} colorScheme="teal" type="button" variant='outline'>
-                        Sign up
-                    </Button>
-                </Box>
-                
-                <span>Forgot your password? <Button variant='link'>click here</Button></span>
-            </form>
-        </VStack>
+        replace(`${pathname}?${params.toString()}`);
+    }
+
+    
+
+    return (
+            <Formik
+                validationSchema={schema}
+                initialValues={{ email: "", password: "" }}
+                onSubmit={handleSubmit}
+            >
+                {({
+                    values,
+                    errors,
+                    touched,
+                    handleChange,
+                    handleBlur,
+                    handleSubmit,
+                }) => (
+                    <div className={styles.login}>
+                        <div className={styles.form}>
+                            {/* Passing handleSubmit parameter tohtml form onSubmit property */}
+                            <form noValidate onSubmit={handleSubmit}>
+                                <span>Login</span>
+                                {/* Our input html with passing formik parameters like handleChange, values, handleBlur to input properties */}
+                                <input
+                                    type="email"
+                                    name="email"
+                                    onChange={handleChange}
+                                    onBlur={handleBlur}
+                                    value={values.email}
+                                    placeholder="Enter email id / username"
+                                    className={styles["form-control"] + " " + styles.inp_text}
+                                    id="email"
+                                />
+                                {/* If validation is not passed show errors */}
+                                <p className={styles["error"]}>
+                                    {errors.email && touched.email && errors.email}
+                                </p>
+                                {/* Our input html with passing formik parameters like handleChange, values, handleBlur to input properties */}
+                                <input
+                                    type="password"
+                                    name="password"
+                                    onChange={handleChange}
+                                    onBlur={handleBlur}
+                                    value={values.password}
+                                    placeholder="Enter password"
+                                    className={styles["form-control"]}
+                                />
+                                {/* If validation is not passed show errors */}
+                                <p className={styles["error"]}>
+                                    {errors.password && touched.password && errors.password}
+                                </p>
+                                {/* Click on submit button to submit the form */}
+                                <button type="submit">Login</button>
+                            </form>
+                        </div>
+                    </div>
+                )}
+            </Formik>
     );
 }
 
