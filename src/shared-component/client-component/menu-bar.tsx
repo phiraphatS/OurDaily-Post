@@ -9,14 +9,14 @@ const user = [
   {
     username: "Bam",
     position: "Girlfriend",
-    url: "https://cloud-object-storage-cos-standard-tni.s3.jp-tok.cloud-object-storage.appdomain.cloud/received_226124396716749.jpeg",
-    status: "Online"
+    url: "https://ourdiary-sue-bambam-bucket.s3.ap-southeast-1.amazonaws.com/our-diary-phitchanan-profile.jpeg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIA4MTWIMJJVFXQVIM6%2F20240402%2Fap-southeast-1%2Fs3%2Faws4_request&X-Amz-Date=20240402T124523Z&X-Amz-Expires=3600&X-Amz-Signature=689fa675097e0c841bbb794e5698ec9b51f44a91fb26c45a28a45322bb5a9aa6&X-Amz-SignedHeaders=host&x-id=GetObject",
+    status: "Offline"
   },
   {
     username: "Sue",
     position: "Boyfriend",
-    url: "https://cloud-object-storage-cos-standard-tni.s3.jp-tok.cloud-object-storage.appdomain.cloud/P1012767.JPG",
-    status: "Offline"
+    url: "https://ourdiary-sue-bambam-bucket.s3.ap-southeast-1.amazonaws.com/our-diary-phiraphat-profile.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIA4MTWIMJJVFXQVIM6%2F20240402%2Fap-southeast-1%2Fs3%2Faws4_request&X-Amz-Date=20240402T124523Z&X-Amz-Expires=3600&X-Amz-Signature=160f13bc819329a8014efe4545f1a28eacc598faadbb334bad45b78002ebc455&X-Amz-SignedHeaders=host&x-id=GetObject",
+    status: "Online"
   }
 ];
 

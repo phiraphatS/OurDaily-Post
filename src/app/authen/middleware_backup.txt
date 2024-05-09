@@ -1,0 +1,18 @@
+import { NextResponse } from 'next/server'
+import type { NextRequest } from 'next/server'
+import { Url } from 'url';
+ 
+// This function can be marked `async` if using `await` inside
+export function middleware(request: NextRequest) {
+
+    // let accessToken = request.cookies.get('access_token')
+    // if (accessToken && accessToken.value) {
+    //     return NextResponse.redirect(new URL('/feeds', request.url))
+    // }
+
+    // return NextResponse.next()
+}
+
+export const config = {
+    matcher: '/:path*',
+}

@@ -1,6 +1,5 @@
-import { handleResponse } from "@/_helpers/handle-response";
 import { authHeader } from "@/_helpers/auth-header";
-import { serviceFunction } from "@/_helpers/service-func";
+import { cookies } from "next/headers";
 
 export const authenticationService = {
     login,
@@ -13,8 +12,14 @@ async function login(params: any) {
         body: JSON.stringify(params)
     };
     return fetch(`${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/authentication/login`, requestOptions)
-    .then(handleResponse)
-    .then(res => {
-        return res;
+    .then(async (res) => {
+        if ([201, 200].includes(res.status)) {
+            const data = await res.json();
+            if (data) {
+                return data;
+            }
+        } else {
+            throw new Error('unauthorized');
+        }
     });
 }

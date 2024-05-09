@@ -10,27 +10,8 @@ interface IProps {
 }
 
 async function LoginComponent(props: IProps) {
-  let errorMessage = "";
+  let errorMessage = "ready";
   let isSuccessful = false;
-  try {
-    if (props.searchParams?.email && props.searchParams?.password) {
-      await authenticationService.login({
-        email: props.searchParams.email,
-        password: props.searchParams.password
-      }).then(res => {
-        if (res && res.status === true) {
-          isSuccessful = true;
-        } else {
-          throw new Error(res.message);
-        }
-      }).catch((error: any) => {
-        throw error;
-      });
-    }
-  } catch (error: any) {
-    // set error message
-    errorMessage = error.message;
-  }
 
   return (
     <Box 
@@ -38,10 +19,15 @@ async function LoginComponent(props: IProps) {
       height="100vh"
       overflow="hidden"
       display="flex"
+      flexDirection="column"
       justifyContent="center"
       alignItems="center"
-      className={styles.main}
+      // className={styles.main}
     >
+      {/* {errorMessage && <div className={styles.error}>{errorMessage}</div>}
+      {props.searchParams?.email && <div>{props.searchParams.email}</div>}
+      {props.searchParams?.password && <div>{props.searchParams.password}</div>}
+      {isSuccessful && <div>login successful</div>} */}
       <LoginForm styles={styles}/>
     </Box>
   )

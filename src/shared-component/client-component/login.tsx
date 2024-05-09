@@ -26,7 +26,7 @@ function LoginForm({ styles }: { styles: IStyles }) {
             .email("Invalid email format"),
         password: Yup.string()
             .required("Password is a required field")
-            .min(8, "Password must be at least 8 characters"),
+            .min(6, "Password must be at least 6 characters"),
     });
 
     const handleSubmit = (values: any) => {
@@ -37,8 +37,6 @@ function LoginForm({ styles }: { styles: IStyles }) {
 
         replace(`${pathname}?${params.toString()}`);
     }
-
-    
 
     return (
             <Formik
