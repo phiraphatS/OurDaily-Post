@@ -13,7 +13,6 @@ async function login(params: any) {
         body: JSON.stringify(params)
     };
     return fetch(`${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/authentication/login`, requestOptions)
-    .then(handleResponse)
     .then(res => {
         return res;
     });

@@ -35,7 +35,7 @@ const menuList = [
   }
 ];
 
-export default function ResponsiveMenuBar({ children }: Readonly<{ children: React.ReactNode }>) {
+export default function ResponsiveMenuBar({ children }: { children: React.ReactNode }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const router = useRouter();
 
