@@ -30,7 +30,7 @@ export default function CarouselComponent() {
         transitionTime={1300}
       >
         {[
-          "/assets/background/page-background1.jpg",
+          "/assets/background/page-background2.png",
         ].map((src, index) => (
           <div key={index}>
             <Image 
@@ -69,9 +69,11 @@ export default function CarouselComponent() {
         display="flex"
         flexDirection="column"
         gap={4}
+        background={`rgba(0, 0, 0, 0.5)`}
+        borderRadius={10}
+        padding={4}
         >
-        <h1 style={{ fontSize: "1.3rem", fontWeight: "bolder" }}>Pitchanan Boonthan</h1>
-        <span>Now time to see my gift for you</span>
+        <h1 style={{ fontSize: "1.3rem", fontWeight: "bolder", whiteSpace: "nowrap" }}>Pitchanan Boonthan</h1>
         <Button colorScheme='pink' variant="solid" onClick={goToFeed}>
           Let's Start
         </Button>

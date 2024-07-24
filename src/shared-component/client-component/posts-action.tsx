@@ -17,8 +17,8 @@ export default function PostsActionComponent(props: { refresh: () => void }) {
   return (
     <>
       <HStack spacing={4} justify='end' width="full" paddingStart={5} paddingEnd={5}>
-        <Button onClick={postDrawerOpen}>Create Post</Button>
-        <Button disabled={true}>Create Story</Button>
+        <Button variant="border-solid-pink" fontWeight={500} onClick={postDrawerOpen}>Post</Button>
+        <Button variant="border-solid-pink" fontWeight={500} disabled={true}>Story</Button>
       </HStack>
 
       <PostDrawerComponent isOpen={isOpen} refresh={props.refresh} onClose={onClose} />

@@ -1,5 +1,5 @@
 // app/fonts.ts
-import { Philosopher } from 'next/font/google'
+import { Philosopher, Montserrat } from 'next/font/google'
 
 const philosopher = Philosopher({ 
   subsets: ["latin"],
@@ -7,6 +7,13 @@ const philosopher = Philosopher({
   variable: "--font-philosopher",
 })
 
+const montserrat = Montserrat({
+  subsets: ["latin"],
+  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+  variable: "--font-montserrat",
+})
+
 export const fonts = {
   philosopher,
+  montserrat,
 }
