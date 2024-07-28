@@ -3,8 +3,9 @@ import React from 'react';
 import { Box, Button, FormControl, FormLabel, Input, VStack } from '@chakra-ui/react';
 import { Formik } from "formik";
 import * as Yup from "yup";
-import { useRouter } from 'next-nprogress-bar';
 import { usePathname } from 'next/navigation';
+import { authenticationService } from '@/_services/authentication-service';
+import { useRouter } from 'next/navigation';
 
 interface IStyles {
     readonly [key: string]: string;
@@ -17,7 +18,7 @@ interface IProps {
 }
 
 function LoginForm({ styles }: { styles: IStyles }) {
-    const { replace } = useRouter();
+    const router = useRouter();
     const pathname = usePathname();
 
     const schema = Yup.object().shape({
@@ -26,18 +27,31 @@ function LoginForm({ styles }: { styles: IStyles }) {
             .email("Invalid email format"),
         password: Yup.string()
             .required("Password is a required field")
-            .min(8, "Password must be at least 8 characters"),
+            .min(6, "Password must be at least 6 characters"),
     });
 
-    const handleSubmit = (values: any) => {
-        // set query params
-        const params = new URLSearchParams();
-        params.append('email', values.email);
-        params.append('password', values.password);
+    // const handleSubmit = (values: any) => {
+    //     // set query params
+    //     const params = new URLSearchParams();
+    //     params.append('email', values.email);
+    //     params.append('password', values.password);
 
-        replace(`${pathname}?${params.toString()}`);
+    //     replace(`${pathname}?${params.toString()}`);
+    // }
+
+    const handleSubmit = async (values: any) => {
+        const params = {
+            username: values.email,
+            password: values.password
+        }
+
+        const results = await authenticationService.login(params);
+        if (!results) {
+            console.log("Login failed")
+            router.refresh();
+            return;
+        }
     }
-
     
 
     return (

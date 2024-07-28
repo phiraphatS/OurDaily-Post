@@ -1,26 +1,16 @@
+import Cookies from 'js-cookie';
 
-export function authHeader() {
+export function authHeader(isNoContentType = false):HeadersInit {
+    // Now we use cookie to store the token
     // return authorization header with jwt token
     const getAccessTokenFromCookie = () => {
-        const cookies = document.cookie.split(';');
-        const accessTokenCookie = cookies.find(cookie => cookie.includes('accessToken='));
-        if (!accessTokenCookie) {
-            return null;
-        }
-        const accessToken = accessTokenCookie.split('=')[1];
+        const accessToken = Cookies.get('accessToken');
         return accessToken;
     }
 
     const accessToken = getAccessTokenFromCookie();
-    if (accessToken) {
-        return { 
-            Authorization: `Bearer ${accessToken}`,
-            'Content-Type': 'application/json'
-        };
-    } else {
-        return {
-            Authorization: ``,
-            'Content-Type': 'application/json'
-        };
-    }
+    return { 
+        Authorization: accessToken ? `Bearer ${accessToken}` : '',
+        'Content-Type': isNoContentType ? '' : 'application/json'
+    };
 }
