@@ -17,7 +17,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={fonts.philosopher.variable}>
+    <html lang="en" className={fonts.montserrat.variable}>
       <body>
         <Providers>
           <Box className="fonts.body">

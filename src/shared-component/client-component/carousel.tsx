@@ -8,9 +8,9 @@ import { useRouter } from 'next-nprogress-bar';
 export default function CarouselComponent() {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
-  const goToFeed = () => {
+  const goToLogin = () => {
     startTransition(() => {
-      router.push('/feeds');
+      router.push('/authen');
     })
   }
   
@@ -30,9 +30,7 @@ export default function CarouselComponent() {
         transitionTime={1300}
       >
         {[
-          "https://cloud-object-storage-cos-standard-tni.s3.jp-tok.cloud-object-storage.appdomain.cloud/Screenshot_20230804_184157_Instagram.jpg",
-          "https://cloud-object-storage-cos-standard-tni.s3.jp-tok.cloud-object-storage.appdomain.cloud/Screenshot_20230815_154844_Instagram.jpg",
-          "https://cloud-object-storage-cos-standard-tni.s3.jp-tok.cloud-object-storage.appdomain.cloud/Screenshot_20230827_094955_Instagram.jpg"
+          "/assets/background/page-background2.png",
         ].map((src, index) => (
           <div key={index}>
             <Image 
@@ -71,10 +69,18 @@ export default function CarouselComponent() {
         display="flex"
         flexDirection="column"
         gap={4}
+        background={`rgba(0, 0, 0, 0.5)`}
+        borderRadius={10}
+        padding={4}
         >
+<<<<<<< Updated upstream
+        <h1 style={{ fontSize: "1.3rem", fontWeight: "bolder", whiteSpace: "nowrap" }}>Pitchanan Boonthan</h1>
+        <Button colorScheme='pink' variant="solid" onClick={goToFeed}>
+=======
         <h1 style={{ fontSize: "1.3rem", fontWeight: "bolder" }}>Pitchanan Boonthan</h1>
         <span>Now time to see my gift for you</span>
-        <Button colorScheme='pink' variant="solid" onClick={goToFeed}>
+        <Button colorScheme='pink' variant="solid" onClick={goToLogin}>
+>>>>>>> Stashed changes
           Let's Start
         </Button>
       </Box> 

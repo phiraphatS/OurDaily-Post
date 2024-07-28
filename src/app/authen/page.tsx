@@ -28,7 +28,7 @@ async function LoginComponent(props: IProps) {
       {props.searchParams?.email && <div>{props.searchParams.email}</div>}
       {props.searchParams?.password && <div>{props.searchParams.password}</div>}
       {isSuccessful && <div>login successful</div>} */}
-      <LoginForm styles={styles}/>
+      <LoginForm/>
     </Box>
   )
 }

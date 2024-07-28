@@ -13,7 +13,7 @@ import FilePondPluginImageResize from 'filepond-plugin-image-resize';
 FilePondAddPlugin.registerPlugin(FilePondPluginImageResize);
 interface IFormValues {
     contentText: string;
-    imgUrl: { key: string, url: string, originalname: string | undefined }[];
+    uploadToken: { fileName: string, uploadToken: string, originalFileName: string }[];
     imgfile: any[];
 }
 
@@ -27,7 +27,7 @@ export default function PostDrawerComponent({ isOpen, refresh, onClose }: IProps
 
     const initialValues: IFormValues = {
         contentText: '',
-        imgUrl: [],
+        uploadToken: [],
         imgfile: []
     }
 
@@ -35,9 +35,15 @@ export default function PostDrawerComponent({ isOpen, refresh, onClose }: IProps
         initialValues: initialValues,
         // validationSchema: validateSchema,
         onSubmit: async (values) => {
+            const mediaItem = await fetch('/api/googlePhotoApi/googleCreateMediaItem', {
+                method: 'POST',
+                body: JSON.stringify(values.uploadToken),
+            }).then(async (res) => await res.json())
+
+            const imgUrls = mediaItem.map((item: any) => item.mediaItem.productUrl);
             const params = {
                 contentText: values.contentText,
-                imgUrl: values.imgUrl
+                imgUrl: imgUrls
             }
 
             postService.postNow(params).then((res: any) => {
@@ -68,20 +74,41 @@ export default function PostDrawerComponent({ isOpen, refresh, onClose }: IProps
         // });
 
         // S3 services
-        await postService.uploadFileS3(file).then((res: any) => {
+        // await postService.uploadFileS3(file).then((res: any) => {
+        //     if (res.status === true) {
+        //         const { key, url } = res.results;
+        //         formik.setFieldValue('imgUrl', [...formik.values.imgUrl, { key: key, url: url }]);
+        //         load(res.results);
+        //     } else {
+        //         error('Upload failed');
+        //     }
+        // }).catch((err: any) => {
+        //     error('Upload failed');
+        // });
+
+        // Google services
+        const form = new FormData();
+        form.append('file', file);
+        await fetch('/api/googlePhotoApi/googleUploadFile', {
+            method: 'POST',
+            body: form,
+        })
+        .then(async (res) => await res.json())
+        .then((res: any) => {
             if (res.status === true) {
-                const { key, url } = res.results;
-                formik.setFieldValue('imgUrl', [...formik.values.imgUrl, { key: key, url: url }]);
+                const uploadTokenObj = res.results;
+                const newValues = (formik.values.uploadToken || []).push(uploadTokenObj);
+                formik.setFieldValue('uploadToken', newValues);
                 load(res.results);
             } else {
                 error('Upload failed');
             }
         }).catch((err: any) => {
             error('Upload failed');
-        });
+        })
     }
 
-    const isButtonDisabled = formik.values.contentText.length === 0 && formik.values.imgUrl.length === 0;
+    const isButtonDisabled = formik.values.contentText.length === 0 && formik.values.uploadToken.length === 0;
     return (
         <Drawer
             isOpen={isOpen}
@@ -111,15 +138,16 @@ export default function PostDrawerComponent({ isOpen, refresh, onClose }: IProps
                             <FilePond
                                 // files={formik.values.imgfile}
                                 onremovefile={async (err: any, file: FilePondFile) => {
-                                    if (formik.values.imgUrl.length === 0) return;
-
+                                    if (formik.values.uploadToken.length === 0) return;
+                                    const newImgUrl = formik.values.uploadToken.filter(({ originalFileName }) => originalFileName !== file.filename);
+                                    formik.setFieldValue('uploadToken', newImgUrl);
                                     // delete file from server
-                                    await postService.deleteFileS3({ key: file.filename }).then((res: any) => {
-                                        if (res.status === true) {
-                                            const newImgUrl = formik.values.imgUrl.filter(({ originalname }) => originalname !== file.filename);
-                                            formik.setFieldValue('imgUrl', newImgUrl);
-                                        }
-                                    })
+                                    // await postService.deleteFileS3({ key: file.filename }).then((res: any) => {
+                                    //     if (res.status === true) {
+                                    //         const newImgUrl = formik.values.imgUrl.filter(({ originalname }) => originalname !== file.filename);
+                                    //         formik.setFieldValue('imgUrl', newImgUrl);
+                                    //     }
+                                    // })
                                 }}
                                 imageResizeMode='contain'
                                 allowImageResize={true}

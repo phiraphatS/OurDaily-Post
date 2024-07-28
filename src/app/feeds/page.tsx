@@ -4,8 +4,10 @@ import React from 'react'
 
 export default function FeedsComponent() {
   return (
-    <Box paddingTop={20} paddingBottom={10}>
-      <PostsComponent/>
+    <Box py={10} px={4} h='100%'>
+      <Box pt={5} pb={10} bg="#fff" h='100%' borderRadius={10}>
+        <PostsComponent/>
+      </Box>
     </Box>
   )
 }
