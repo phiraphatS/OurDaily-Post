@@ -20,11 +20,22 @@ export async function POST(req: NextRequest) {
       return new Response("No file found", { status: 400 });
     }
 
-    const filePath = `./public/file/${file.name}`;
+    // for other ENV
+    let filePath = '';
+    if (process.env.NODE_ENV === 'development') {
+      filePath = `./public/file/${file.name}`;
 
-    // create folder file
-    if (!fs.existsSync('./public/file')) {
-      fs.mkdirSync('./public/file');
+      // create folder file
+      if (!fs.existsSync('./public/file')) {
+        fs.mkdirSync('./public/file');
+      }
+    } else {
+      filePath = `./file/${file.name}`;
+
+      // create folder file
+      if (!fs.existsSync('./file')) {
+        fs.mkdirSync('./file');
+      }
     }
 
     // Write the file to folder file
