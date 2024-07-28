@@ -47,7 +47,7 @@ export async function POST(req: NextRequest) {
     const fileName = `${new Date().toISOString()}_${file.name}`;
     const originalFileName = file.name;
 
-    const uploadToken = await uploadToGooglePhotos(fullFilePath, mimeType, fileName, req);
+    const uploadToken = await uploadToGooglePhotos(fullFilePath, mimeType, req);
     const responseBody = {
       originalFileName: originalFileName,
       fileName: fileName,

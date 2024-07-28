@@ -4,7 +4,7 @@ import fs from 'fs';
 import { NextRequest } from 'next/server';
 import { getToken } from 'next-auth/jwt';
 
-export async function uploadToGooglePhotos(filePath: string, mimeType: string, originalname: string, req: NextRequest) {
+export async function uploadToGooglePhotos(filePath: string, mimeType: string, req: NextRequest) {
     try {
         // Check if the file exists
         if (!fs.existsSync(filePath)) {
@@ -13,7 +13,6 @@ export async function uploadToGooglePhotos(filePath: string, mimeType: string, o
 
         // Read file content as blob
         const fileContent = fs.readFileSync(filePath);
-        const fileBlob = new Blob([fileContent], { type: mimeType });
 
         // All endpoints we need to call
         const UploadBytesEndpoint = 'https://photoslibrary.googleapis.com/v1/uploads';
@@ -27,22 +26,18 @@ export async function uploadToGooglePhotos(filePath: string, mimeType: string, o
         const accessToken = token.accessToken
 
         // 2. Upload Bytes to Google Photos
-        const uploadBytesheaders = {
-            Authorization: `Bearer ${accessToken}`,
-            ContentType: 'application/octet-stream',
+        const uploadBytesHeaders = {
+            'Authorization': `Bearer ${accessToken}`,
+            'Content-Type': 'application/octet-stream',
             'X-Goog-Upload-Content-Type': mimeType,
             'X-Goog-Upload-Protocol': 'raw',
-        }
-
-        const formData = new FormData();
-        formData.append('file', fileBlob, originalname);
+        };
 
         const response = await fetch(UploadBytesEndpoint, {
             method: 'POST',
-            headers: uploadBytesheaders,
-            body: formData,
+            headers: uploadBytesHeaders,
+            body: fileContent,
         });
-
         
         // Log the response for debugging
         console.log('Upload response status:', response.status);
