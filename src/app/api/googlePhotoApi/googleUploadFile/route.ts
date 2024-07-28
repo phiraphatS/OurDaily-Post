@@ -16,38 +16,12 @@ export async function POST(req: NextRequest) {
     const formData = await req.formData();
     const file: any = formData.getAll('file')[0];
 
-    if (!file) {
-      return new Response("No file found", { status: 400 });
-    }
-
-    // for other ENV
-    let filePath = '';
-    if (process.env.NODE_ENV === 'development') {
-      filePath = `./public/file/${file.name}`;
-
-      // create folder file
-      if (!fs.existsSync('./public/file')) {
-        fs.mkdirSync('./public/file');
-      }
-    } else {
-      filePath = `./file/${file.name}`;
-
-      // create folder file
-      if (!fs.existsSync('./file')) {
-        fs.mkdirSync('./file');
-      }
-    }
-
-    // Write the file to folder file
-    await pump(file, fs.createWriteStream(filePath));
-
-    const fullFilePath = path.resolve(filePath);
     const mimeType = file.type;
     // Add date to the file name
     const fileName = `${new Date().toISOString()}_${file.name}`;
     const originalFileName = file.name;
 
-    const uploadToken = await uploadToGooglePhotos(fullFilePath, mimeType, req);
+    const uploadToken = await uploadToGooglePhotos(formData, mimeType, req);
     const responseBody = {
       originalFileName: originalFileName,
       fileName: fileName,
