@@ -1,19 +1,26 @@
-import { cookies } from 'next/headers';
-import fs from 'fs';
+import { getSession } from 'next-auth/react';
+import { NextRequest } from 'next/server';
+import { getToken } from 'next-auth/jwt';
 
 interface uploadItemInterface {
     fileName: string;
     uploadToken: string;
 }
 
-export async function createMediaItem (uploadItem: uploadItemInterface[]) {
+export async function createMediaItem (req: NextRequest) {
     try {
         // All endpoints we need to call
         const CreateMediaItemEndpoint = 'https://photoslibrary.googleapis.com/v1/mediaItems:batchCreate';
 
         // 1. Get upload token
-        const cookiesStorage = cookies();
-        const accessToken = cookiesStorage.get('token');
+        const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
+        if (!token) {
+            throw new Error('No token found');
+        }
+        const accessToken = token.accessToken
+
+        // 1.1 Get body
+        const uploadItem: uploadItemInterface[] = await req.json();
 
         // 2. Create Media Item
         const createMediaItemHeaders = {

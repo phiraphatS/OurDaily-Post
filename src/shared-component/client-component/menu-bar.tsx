@@ -4,7 +4,9 @@ import { Box, Flex, Button, useDisclosure, Drawer, DrawerOverlay, DrawerContent,
 import { useRouter } from "next-nprogress-bar"
 import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons";
 import { useScrollYPosition } from "react-use-scroll-position";
-import { FaHome, FaGift, FaNewspaper } from 'react-icons/fa';
+import { FaHome, FaGift, FaNewspaper, FaSignOutAlt } from 'react-icons/fa';
+import { useSession } from "next-auth/react";
+import { signOut } from "next-auth/react";
 
 const user = [
   {
@@ -36,11 +38,17 @@ const menuList = [
     name: "Feeds",
     url: "/feeds",
     icon: FaNewspaper
+  },
+  {
+    name: "Logout",
+    url: "/api/auth/signout",
+    icon: FaSignOutAlt
   }
 ];
 
 export default function ResponsiveMenuBar({ children }: { children: React.ReactNode }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const { data: session } = useSession();
   const router = useRouter();
 
   const [showNavbar, setShowNavbar] = useState(true);
@@ -75,14 +83,20 @@ export default function ResponsiveMenuBar({ children }: { children: React.ReactN
 
 
   const Link = ({ children, ...props }: any) => {
+    const handleClick = () => {
+      onClose();
+      if (props.href === "/api/auth/signout") {
+        signOut({ callbackUrl: "/authen" });
+      } else {
+        router.push(props.href);
+      }
+    };
+
     return (
       <Button
         className="menu-link"
         variant="ghost"
-        onClick={() => {
-          onClose();
-          router.push(props.href);
-        }}
+        onClick={handleClick}
         leftIcon={<Icon as={props.icon} />}
         justifyContent="flex-start"
         width="full"
@@ -90,7 +104,7 @@ export default function ResponsiveMenuBar({ children }: { children: React.ReactN
         {children}
       </Button>
     );
-  }
+  };
 
   const MenuItems = ({ children, href, icon }: any) => (
     <Link mt={{ base: 4, md: 0 }} mr={6} display="block" href={href} icon={icon}>
@@ -117,17 +131,23 @@ export default function ResponsiveMenuBar({ children }: { children: React.ReactN
             </Box>
             <Box display={{ base: "none", md: "flex" }}>
               {menuList.map((menu, i) => (
-                <MenuItems key={i} href={menu.url} icon={menu.icon}>{menu.name}</MenuItems>
+                <MenuItems key={i} href={menu.url} icon={menu.icon}>
+                  {menu.name}
+                </MenuItems>
               ))}
             </Box>
           </Flex>
-          <AvatarGroup size='sm' max={2}>
-            {user.map((u, i) => (
-              <Avatar key={i} name={u.username} src={u.url}>
-                <AvatarBadge boxSize='1em' bg={u.status === "Online" ? "green.500" : "gray.500"} />
-              </Avatar>
-            ))}
-          </AvatarGroup>
+          {session ? (
+            <AvatarGroup size='sm' max={2}>
+              {user.map((u, i) => (
+                <Avatar key={i} name={u.username} src={u.url}>
+                  <AvatarBadge boxSize='1em' bg={u.status === "Online" ? "green.500" : "gray.500"} />
+                </Avatar>
+              ))}
+            </AvatarGroup>
+          ) : (
+            <Button onClick={() => router.push("/api/auth/signin")}>Sign In</Button>
+          )}
         </Flex>
       </Box>
 

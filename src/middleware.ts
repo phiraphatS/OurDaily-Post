@@ -5,37 +5,37 @@ const loginPath = new RegExp ('^/authen$');
 
 export function middleware(req: NextRequest) {
 
-    const { pathname, locale, origin } = req.nextUrl;
+    // const { pathname, locale, origin } = req.nextUrl;
 
-    // In progress
-    const accessToken = req.cookies.get('access_token');
-    const isAuth = !!accessToken;
+    // // In progress
+    // const accessToken = req.cookies.get('access_token');
+    // const isAuth = !!accessToken;
 
-    if (isAuth && loginPath.test(pathname)) {
-        const queryObj = req.nextUrl.searchParams;
-        if (queryObj.has('afterlogin-redirect')) {
-            const encryptedPathWithQueryString = queryObj.get('afterlogin-redirect') as string;
-            const fullPath = decodeURIComponent(encryptedPathWithQueryString);
-            const searchRedirectUrl = new URL(fullPath, origin);
-            return NextResponse.redirect(searchRedirectUrl.toString());
-        }
+    // if (isAuth && loginPath.test(pathname)) {
+    //     const queryObj = req.nextUrl.searchParams;
+    //     if (queryObj.has('afterlogin-redirect')) {
+    //         const encryptedPathWithQueryString = queryObj.get('afterlogin-redirect') as string;
+    //         const fullPath = decodeURIComponent(encryptedPathWithQueryString);
+    //         const searchRedirectUrl = new URL(fullPath, origin);
+    //         return NextResponse.redirect(searchRedirectUrl.toString());
+    //     }
 
-        const searchRedirectUrl = new URL(`${locale}/feeds`, origin);
-        return NextResponse.redirect(searchRedirectUrl.toString());
-    }
+    //     const searchRedirectUrl = new URL(`${locale}/feeds`, origin);
+    //     return NextResponse.redirect(searchRedirectUrl.toString());
+    // }
 
-    if (!isAuth && !loginPath.test(pathname)) {
-        if (pathname) {
-            const queryString = req.nextUrl.search;
-            const fullPath = queryString ? `${pathname}${queryString}` : pathname;
-            const encryptedPathWithQueryString = encodeURIComponent(fullPath);
-            const loginRedirectUrl = new URL(`${locale}/?afterlogin-redirect=${encryptedPathWithQueryString}`, origin);
-            return NextResponse.redirect(loginRedirectUrl.toString());
-        }
+    // if (!isAuth && !loginPath.test(pathname)) {
+    //     if (pathname) {
+    //         const queryString = req.nextUrl.search;
+    //         const fullPath = queryString ? `${pathname}${queryString}` : pathname;
+    //         const encryptedPathWithQueryString = encodeURIComponent(fullPath);
+    //         const loginRedirectUrl = new URL(`${locale}/?afterlogin-redirect=${encryptedPathWithQueryString}`, origin);
+    //         return NextResponse.redirect(loginRedirectUrl.toString());
+    //     }
 
-        const localeRedirectUrl = new URL(`${locale}`, origin);
-        return NextResponse.redirect(localeRedirectUrl.toString());
-    }
+    //     const localeRedirectUrl = new URL(`${locale}`, origin);
+    //     return NextResponse.redirect(localeRedirectUrl.toString());
+    // }
 
     return NextResponse.next();
 }

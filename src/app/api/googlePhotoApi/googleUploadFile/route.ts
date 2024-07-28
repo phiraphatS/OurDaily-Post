@@ -33,11 +33,13 @@ export async function POST(req: NextRequest) {
     const fullFilePath = path.resolve(filePath);
     const mimeType = file.type;
     // Add date to the file name
-    const originalname = `${new Date().toISOString()}_${file.name}`;
+    const fileName = `${new Date().toISOString()}_${file.name}`;
+    const originalFileName = file.name;
 
-    const uploadToken = await uploadToGooglePhotos(fullFilePath, mimeType, originalname);
+    const uploadToken = await uploadToGooglePhotos(fullFilePath, mimeType, fileName, req);
     const responseBody = {
-      fileName: originalname,
+      originalFileName: originalFileName,
+      fileName: fileName,
       uploadToken: uploadToken,
     }
 
