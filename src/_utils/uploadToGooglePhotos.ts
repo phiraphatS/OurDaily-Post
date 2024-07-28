@@ -4,16 +4,8 @@ import fs from 'fs';
 import { NextRequest } from 'next/server';
 import { getToken } from 'next-auth/jwt';
 
-export async function uploadToGooglePhotos(filePath: string, mimeType: string, req: NextRequest) {
+export async function uploadToGooglePhotos(formData: FormData, mimeType: string, req: NextRequest) {
     try {
-        // Check if the file exists
-        if (!fs.existsSync(filePath)) {
-            throw new Error(`File not found: ${filePath}`);
-        }
-
-        // Read file content as blob
-        const fileContent = fs.readFileSync(filePath);
-
         // All endpoints we need to call
         const UploadBytesEndpoint = 'https://photoslibrary.googleapis.com/v1/uploads';
         // const CreateMediaItemEndpoint = 'https://photoslibrary.googleapis.com/v1/mediaItems:batchCreate';
@@ -36,7 +28,7 @@ export async function uploadToGooglePhotos(filePath: string, mimeType: string, r
         const response = await fetch(UploadBytesEndpoint, {
             method: 'POST',
             headers: uploadBytesHeaders,
-            body: fileContent,
+            body: formData,
         });
         
         // Log the response for debugging
@@ -57,8 +49,5 @@ export async function uploadToGooglePhotos(filePath: string, mimeType: string, r
     } catch (error) {
         console.error('Error uploading to Google Photos:', error);
         throw error;
-    } finally {
-        // Delete the file after uploading
-        fs.unlinkSync(filePath);
     }
 }
