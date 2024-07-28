@@ -73,14 +73,8 @@ export default function CarouselComponent() {
         borderRadius={10}
         padding={4}
         >
-<<<<<<< Updated upstream
         <h1 style={{ fontSize: "1.3rem", fontWeight: "bolder", whiteSpace: "nowrap" }}>Pitchanan Boonthan</h1>
-        <Button colorScheme='pink' variant="solid" onClick={goToFeed}>
-=======
-        <h1 style={{ fontSize: "1.3rem", fontWeight: "bolder" }}>Pitchanan Boonthan</h1>
-        <span>Now time to see my gift for you</span>
         <Button colorScheme='pink' variant="solid" onClick={goToLogin}>
->>>>>>> Stashed changes
           Let's Start
         </Button>
       </Box> 
