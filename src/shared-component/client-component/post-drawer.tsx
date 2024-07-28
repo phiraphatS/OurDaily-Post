@@ -68,17 +68,37 @@ export default function PostDrawerComponent({ isOpen, refresh, onClose }: IProps
         // });
 
         // S3 services
-        await postService.uploadFileS3(file).then((res: any) => {
+        // await postService.uploadFileS3(file).then((res: any) => {
+        //     if (res.status === true) {
+        //         const { key, url } = res.results;
+        //         formik.setFieldValue('imgUrl', [...formik.values.imgUrl, { key: key, url: url }]);
+        //         load(res.results);
+        //     } else {
+        //         error('Upload failed');
+        //     }
+        // }).catch((err: any) => {
+        //     error('Upload failed');
+        // });
+
+        // Google services
+        const form = new FormData();
+        form.append('file', file);
+        await fetch('/api/googleUploadFile', {
+            method: 'POST',
+            body: form,
+        })
+        .then(async (res) => await res.json())
+        .then((res: any) => {
             if (res.status === true) {
-                const { key, url } = res.results;
-                formik.setFieldValue('imgUrl', [...formik.values.imgUrl, { key: key, url: url }]);
+                const { id, imageUrl, filename } = res.results;
+                formik.setFieldValue('imgUrl', [...formik.values.imgUrl, { key: id, url: imageUrl, originalname: filename }]);
                 load(res.results);
             } else {
                 error('Upload failed');
             }
         }).catch((err: any) => {
             error('Upload failed');
-        });
+        })
     }
 
     const isButtonDisabled = formik.values.contentText.length === 0 && formik.values.imgUrl.length === 0;
