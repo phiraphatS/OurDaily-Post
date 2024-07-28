@@ -6,6 +6,11 @@ import { getToken } from 'next-auth/jwt';
 
 export async function uploadToGooglePhotos(filePath: string, mimeType: string, originalname: string, req: NextRequest) {
     try {
+        // Check if the file exists
+        if (!fs.existsSync(filePath)) {
+            throw new Error(`File not found: ${filePath}`);
+        }
+
         // Read file content as blob
         const fileContent = fs.readFileSync(filePath);
         const fileBlob = new Blob([fileContent], { type: mimeType });
