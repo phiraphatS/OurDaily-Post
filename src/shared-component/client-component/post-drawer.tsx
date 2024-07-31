@@ -35,10 +35,13 @@ export default function PostDrawerComponent({ isOpen, refresh, onClose }: IProps
         initialValues: initialValues,
         // validationSchema: validateSchema,
         onSubmit: async (values) => {
-            const mediaItem = await fetch('/api/googlePhotoApi/googleCreateMediaItem', {
-                method: 'POST',
-                body: JSON.stringify(values.uploadToken),
-            }).then(async (res) => await res.json())
+            let mediaItem = [];
+            if (values.uploadToken  && values.uploadToken.length > 0) {
+                mediaItem = await fetch('/api/googlePhotoApi/googleCreateMediaItem', {
+                    method: 'POST',
+                    body: JSON.stringify(values.uploadToken),
+                }).then(async (res) => await res.json())
+            }
 
             const imgUrls = mediaItem.map((item: any) => item.mediaItem.productUrl);
             const params = {
