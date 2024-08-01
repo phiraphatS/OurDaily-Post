@@ -12,10 +12,10 @@ export async function uploadToGooglePhotos(formData: FormData, mimeType: string,
 
         // 1. Get upload token
         const token = await getToken({ req });
+        console.log('Token:', token);
         if (!token) {
             throw new Error('No token found');
         }
-        console.log('Token:', token);
         const accessToken = token.accessToken
 
         // 2. Upload Bytes to Google Photos
