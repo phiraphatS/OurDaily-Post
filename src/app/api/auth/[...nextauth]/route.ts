@@ -11,9 +11,12 @@ const handler = NextAuth({
       clientSecret: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_SECRET as string,
       authorization: {
         params: {
-          scope: 'https://www.googleapis.com/auth/photoslibrary',
-        },
-      },
+          scope: 'openid https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/photoslibrary',
+          prompt: "consent",
+          access_type: "offline",
+          response_type: "code"
+        }
+      }
     }),
     CredentialsProvider({
       name: 'Credentials',
@@ -41,7 +44,7 @@ const handler = NextAuth({
       }
       return token;
     },
-    async session({ session, token, user }) {
+    async session({ session, token }) {
       session.accessToken = token.accessToken;
       return session;
     },
