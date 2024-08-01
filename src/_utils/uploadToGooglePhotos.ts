@@ -11,10 +11,11 @@ export async function uploadToGooglePhotos(formData: FormData, mimeType: string,
         // const CreateMediaItemEndpoint = 'https://photoslibrary.googleapis.com/v1/mediaItems:batchCreate';
 
         // 1. Get upload token
-        const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
+        const token = await getToken({ req });
         if (!token) {
             throw new Error('No token found');
         }
+        console.log('Token:', token);
         const accessToken = token.accessToken
 
         // 2. Upload Bytes to Google Photos
