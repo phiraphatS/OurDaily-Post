@@ -116,7 +116,7 @@ export default function PostCardComponent(props: IProps) {
 
     const getMediaItemBaseUrl = async () => {
         try {
-            if (!accessToken) {
+            if (!accessToken || post.img.length === 0) {
                 return post.img.map((obj) => obj.url);
             }
 
@@ -158,6 +158,10 @@ export default function PostCardComponent(props: IProps) {
         getMediaItemBaseUrl().then((res) => {
             setMediaItemBaseUrl(res);
         });
+
+        return () => {
+            setMediaItemBaseUrl([]);
+        }
     }, [post.img, accessToken]);
 
     return (
