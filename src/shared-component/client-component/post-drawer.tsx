@@ -169,7 +169,7 @@ export default function PostDrawerComponent({ isOpen, refresh, onClose }: IProps
                                 acceptedFileTypes={['jpg', 'jpeg', 'png']}
                                 allowMultiple={true}
                                 maxFiles={6}
-                                name="uploadToken"
+                                // name="uploadToken"
                                 labelIdle='Drop or Upload Image.'
                                 credits={false}
                                 server={{

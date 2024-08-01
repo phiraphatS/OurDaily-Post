@@ -9,16 +9,16 @@ export function authHeader(isNoContentType = false):HeadersInit {
         return accessToken;
     }
 
-    let userEmail;
-    const sessionStorage = useSession()
-    if (sessionStorage && sessionStorage.data && sessionStorage.data.user) {
-        userEmail = sessionStorage.data.user.email;
-    }
+    // let userEmail;
+    // const sessionStorage = useSession()
+    // if (sessionStorage && sessionStorage.data && sessionStorage.data.user) {
+    //     userEmail = sessionStorage.data.user.email;
+    // }
 
     const accessToken = getAccessTokenFromCookie();
     return { 
         Authorization: accessToken ? `Bearer ${accessToken}` : '',
         'Content-Type': isNoContentType ? '' : 'application/json',
-        'X-User-Email': userEmail ? userEmail : ''
+        // 'X-User-Email': userEmail ? userEmail : ''
     };
 }
