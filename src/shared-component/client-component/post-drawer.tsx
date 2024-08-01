@@ -105,13 +105,11 @@ export default function PostDrawerComponent({ isOpen, refresh, onClose }: IProps
                 throw new Error('Upload failed');
             }
             const uploadTokenObj = await res.json();
-            console.log('uploadTokenObj', uploadTokenObj);
             return uploadTokenObj
         })
         .then((uploadTokenObj: any) => {
             if (uploadTokenObj) {
-                const newValues = (formik.values.uploadToken || []).push(uploadTokenObj);
-                formik.setFieldValue('uploadToken', newValues);
+                formik.setFieldValue('uploadToken', [...formik.values.uploadToken, uploadTokenObj]);
                 load(uploadTokenObj);
             } else {
                 error('Upload failed');
