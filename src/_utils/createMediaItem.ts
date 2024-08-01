@@ -33,7 +33,8 @@ export async function createMediaItem (req: NextRequest) {
                 return {
                     description: 'Uploaded from OurDailyApp',
                     simpleMediaItem: {
-                        ...item
+                        fileName: item.fileName,
+                        uploadToken: item.uploadToken,
                     }
                 }
             })
@@ -45,11 +46,17 @@ export async function createMediaItem (req: NextRequest) {
             body: JSON.stringify(requestBody),
         });
 
+        // Log the response for debugging
+        console.log('Upload response status:', response.status);
+        console.log('Upload response headers:', response.headers);
+
         // Check if the upload was't successful
         // Follow the retry and error handling best practices, keeping the following points in mind
         if (response.status === 429) {
             throw new Error('Rate limit exceeded');
         } else if (response.status !== 200) {
+            const errorText = await response.text();
+            console.error('Error response:', errorText);
             throw new Error('Error creating media item');
         }
 
