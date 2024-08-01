@@ -14,7 +14,6 @@ FilePondAddPlugin.registerPlugin(FilePondPluginImageResize);
 interface IFormValues {
     contentText: string;
     uploadToken: { fileName: string, uploadToken: string, originalFileName: string }[];
-    imgfile: any[];
 }
 
 interface IProps {
@@ -28,7 +27,6 @@ export default function PostDrawerComponent({ isOpen, refresh, onClose }: IProps
     const initialValues: IFormValues = {
         contentText: '',
         uploadToken: [],
-        imgfile: []
     }
 
     const formik = useFormik({
@@ -36,11 +34,17 @@ export default function PostDrawerComponent({ isOpen, refresh, onClose }: IProps
         // validationSchema: validateSchema,
         onSubmit: async (values) => {
             let mediaItem = [];
+            console.log('values', values);
+            
             if (values.uploadToken  && values.uploadToken.length > 0) {
                 mediaItem = await fetch('/api/googlePhotoApi/googleCreateMediaItem', {
                     method: 'POST',
                     body: JSON.stringify(values.uploadToken),
                 }).then(async (res) => await res.json())
+                .catch((err: any) => {
+                    console.log(err);
+                    return [];
+                });
             }
 
             const imgUrls = mediaItem.map((item: any) => item.mediaItem.productUrl);
@@ -97,9 +101,11 @@ export default function PostDrawerComponent({ isOpen, refresh, onClose }: IProps
             body: form,
         })
         .then(async (res) => {
-            if (!res.ok)
+            if (!res.ok) {
                 throw new Error('Upload failed');
+            }
             const uploadTokenObj = await res.json();
+            console.log('uploadTokenObj', uploadTokenObj);
             return uploadTokenObj
         })
         .then((uploadTokenObj: any) => {
