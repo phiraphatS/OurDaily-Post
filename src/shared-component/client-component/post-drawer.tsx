@@ -96,13 +96,17 @@ export default function PostDrawerComponent({ isOpen, refresh, onClose }: IProps
             method: 'POST',
             body: form,
         })
-        .then(async (res) => await res.json())
-        .then((res: any) => {
-            if (res.status === true) {
-                const uploadTokenObj = res.results;
+        .then(async (res) => {
+            if (!res.ok)
+                throw new Error('Upload failed');
+            const uploadTokenObj = await res.json();
+            return uploadTokenObj
+        })
+        .then((uploadTokenObj: any) => {
+            if (uploadTokenObj) {
                 const newValues = (formik.values.uploadToken || []).push(uploadTokenObj);
                 formik.setFieldValue('uploadToken', newValues);
-                load(res.results);
+                load(uploadTokenObj);
             } else {
                 error('Upload failed');
             }
@@ -159,7 +163,7 @@ export default function PostDrawerComponent({ isOpen, refresh, onClose }: IProps
                                 acceptedFileTypes={['jpg', 'jpeg', 'png']}
                                 allowMultiple={true}
                                 maxFiles={6}
-                                // name="imgfile"
+                                name="uploadToken"
                                 labelIdle='Drop or Upload Image.'
                                 credits={false}
                                 server={{
