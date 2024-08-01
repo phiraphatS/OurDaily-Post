@@ -37,14 +37,15 @@ export default function PostDrawerComponent({ isOpen, refresh, onClose }: IProps
             console.log('values', values);
             
             if (values.uploadToken  && values.uploadToken.length > 0) {
-                mediaItem = await fetch('/api/googlePhotoApi/googleCreateMediaItem', {
+                const fetchData = await fetch('/api/googlePhotoApi/googleCreateMediaItem', {
                     method: 'POST',
                     body: JSON.stringify(values.uploadToken),
                 }).then(async (res) => await res.json())
                 .catch((err: any) => {
                     console.log(err);
-                    return [];
                 });
+
+                mediaItem = fetchData.newMediaItemResults || [];
             }
 
             const imgUrls = mediaItem.map((item: any) => item.mediaItem.productUrl);
