@@ -48,7 +48,7 @@ export default function PostDrawerComponent({ isOpen, refresh, onClose }: IProps
                 mediaItem = fetchData.newMediaItemResults || [];
             }
 
-            const imgUrls = mediaItem.map((item: any) => ({ url: item.mediaItem.productUrl, key: item.mediaItem.filename }));
+            const imgUrls = mediaItem.map((item: any) => ({ url: item.mediaItem.productUrl, key: item.mediaItem.id }));
             const params = {
                 contentText: values.contentText,
                 imgUrl: imgUrls

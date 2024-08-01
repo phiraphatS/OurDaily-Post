@@ -1,6 +1,6 @@
 import { Image, Text, Box, Card, CardHeader, Flex, Avatar, Heading, IconButton, CardBody, Grid, GridItem, CardFooter, Button, AvatarGroup, useDisclosure } from '@chakra-ui/react';
 import moment from 'moment';
-import React, { useEffect } from 'react'
+import React, { useEffect, useMemo } from 'react'
 import { BiSolidHeart, BiHeart, BiChat, BiShare } from 'react-icons/bi';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import CommentDrawerComponent from './comment-drawer';
@@ -11,7 +11,10 @@ import { useSession } from 'next-auth/react';
 interface IPost {
     id: number;
     content: string;
-    img: string[];
+    img: {
+        url: string;
+        key: string;
+    }[];
     createdAt: Date;
     profile: {
         id: number;
@@ -42,21 +45,12 @@ interface IProps {
     onLike: (postId: number) => void;
 }
 
-async function fetchImageAsBlob(url: string, accessToken: string) {
-    const response = await fetch(url, {
-        headers: {
-            'Authorization': `Bearer ${accessToken}`
-        }
-    });
-    const blob = await response.blob();
-    return URL.createObjectURL(blob);
-}
-
 export default function PostCardComponent(props: IProps) {
-    const { post, onLike, setPosts } = props;
+    const { post, onLike } = props;
     const { isOpen: isCommentOpen, onOpen: onCommentOpen, onClose: onCommentClose } = useDisclosure();
     const { data: session } = useSession();
     const accessToken = session?.accessToken;
+    const [mediaItemBaseUrl, setMediaItemBaseUrl] = React.useState<string[]>([]);
 
     const isPersonal = post.profile.id === 2;
     const fromNow = (createdDate: Date) => {
@@ -66,24 +60,6 @@ export default function PostCardComponent(props: IProps) {
     const commentPost = () => {
         onCommentOpen();
     }
-
-    useEffect(() => {
-        async function loadImages() {
-            if (!accessToken) return [];
-            const urls = await Promise.all(
-                post.img.map(imageUrl => fetchImageAsBlob(imageUrl, accessToken))
-            );
-
-            setPosts((pre) => (pre.map((post) => (
-                post.id === props.post.id ? { ...post, img: urls } : post
-            ))));
-        }
-
-        loadImages();
-
-        // Cleanup function to revoke object URLs
-        return () => { };
-    }, [post.img, accessToken]);
 
     const avatarActionGroup = (like: any[]) => {
         return <>
@@ -138,6 +114,52 @@ export default function PostCardComponent(props: IProps) {
         })
     }
 
+    const getMediaItemBaseUrl = async () => {
+        try {
+            if (!accessToken) {
+                return post.img.map((obj) => obj.url);
+            }
+
+            const getMultipleMediaItemsEndpoint = 'https://photoslibrary.googleapis.com/v1/mediaItems:batchGet';
+
+            const queryStrings = post.img.map((obj) => `mediaItemIds=${obj.key}`).join('&');
+            const urlEndpoint = `${getMultipleMediaItemsEndpoint}?${queryStrings}`;
+
+            const getMediaItemHeaders = {
+                Authorization: `Bearer ${accessToken}`,
+                "Content-type": "application/json"
+            }
+
+            const response = await fetch(urlEndpoint, {
+                method: 'GET',
+                headers: getMediaItemHeaders,
+            });
+
+            if (response.status !== 200) {
+                return post.img.map((obj) => obj.url);
+            }
+
+            const mediaItems = await response.json();
+            const baseUrl: string[] = [];
+            mediaItems.mediaItemResults.forEach((item: any) => {
+                if (item.mediaItem) {
+                    baseUrl.push(item.mediaItem.baseUrl);
+                }
+            });
+
+            return baseUrl;
+        } catch (error) {
+            console.error('Error creating media item:', error);
+            return [];
+        }
+    }
+
+    useEffect(() => {
+        getMediaItemBaseUrl().then((res) => {
+            setMediaItemBaseUrl(res);
+        });
+    }, [post.img, accessToken]);
+
     return (
         <Card
             maxW='lg'
@@ -165,24 +187,24 @@ export default function PostCardComponent(props: IProps) {
                 </CardBody>
             )}
 
-            {post.img.length > 0 && (<>
+            {mediaItemBaseUrl.length > 0 && (<>
                 <CardBody>
-                    {post.img.length === 1 && (
+                    {mediaItemBaseUrl.length === 1 && (
                         <Image
                             objectFit="cover"
-                            src={post.img[0]}
+                            src={`${mediaItemBaseUrl[0]}=w800-h800-c`}
                             alt={`Image 1`}
                             width="100%"
                             height="300px"
                         />
                     )}
-                    {post.img.length == 2 && (
+                    {mediaItemBaseUrl.length == 2 && (
                         <Grid templateColumns="repeat(2, 1fr)" gap={4}>
-                            {post.img.map((image, index) => (
+                            {mediaItemBaseUrl.map((image, index) => (
                                 <GridItem key={index}>
                                     <Image
                                         objectFit="cover"
-                                        src={image}
+                                        src={`${image}=w800-h800-c`}
                                         alt={`Image ${index + 1}`}
                                         width="100%"
                                         height="250px"
@@ -191,23 +213,23 @@ export default function PostCardComponent(props: IProps) {
                             ))}
                         </Grid>
                     )}
-                    {post.img.length > 2 && (
+                    {mediaItemBaseUrl.length > 2 && (
                         <>
                             <Grid
-                                templateColumns={`repeat(${post.img.length > 4 ? 3 : (post.img.length - 1)}, 1fr)`}
+                                templateColumns={`repeat(${mediaItemBaseUrl.length > 4 ? 3 : (mediaItemBaseUrl.length - 1)}, 1fr)`}
                                 gap={2}
                             >
-                                {post.img.slice(0, 4).map((image, index) => {
+                                {mediaItemBaseUrl.slice(0, 4).map((image, index) => {
                                     let row = <></>
                                     if (index === 0) {
                                         row = (
                                             <GridItem
                                                 key={index}
-                                                colSpan={post.img.length - 1}
+                                                colSpan={mediaItemBaseUrl.length - 1}
                                             >
                                                 <Image
                                                     objectFit="cover"
-                                                    src={image}
+                                                    src={`${image}=w800-h800-c`}
                                                     alt={`Image ${index + 1}`}
                                                     width="100%"
                                                     height="200px"
@@ -215,12 +237,12 @@ export default function PostCardComponent(props: IProps) {
                                             </GridItem>
                                         )
                                     } else {
-                                        if (index === 3 && post.img.length > 4) {
+                                        if (index === 3 && mediaItemBaseUrl.length > 4) {
                                             row = <GridItem key={index}>
                                                 <Image
                                                     objectFit="cover"
-                                                    src={`https://via.placeholder.com/800x800?text=%2B${post.img.length - 4}...`}
-                                                    alt={`+${post.img.length - 4}`}
+                                                    src={`https://via.placeholder.com/800x800?text=%2B${mediaItemBaseUrl.length - 4}...`}
+                                                    alt={`+${mediaItemBaseUrl.length - 4}`}
                                                     width="100%"
                                                     height="100px"
                                                 />
@@ -229,7 +251,7 @@ export default function PostCardComponent(props: IProps) {
                                             row = <GridItem key={index}>
                                                 <Image
                                                     objectFit="cover"
-                                                    src={image}
+                                                    src={`${image}=w800-h800-c`}
                                                     alt={`Image ${index + 1}`}
                                                     width="100%"
                                                     height="100px"
@@ -290,7 +312,7 @@ export default function PostCardComponent(props: IProps) {
                     <BiShare />
                 </Button>
             </CardFooter>
-            {isCommentOpen && (
+            { isCommentOpen && (
                 <CommentDrawerComponent isOpen={isCommentOpen} onClose={onCommentClose} postId={post.id} updateCommentCount={updateCommentCount} />
             )}
         </Card>

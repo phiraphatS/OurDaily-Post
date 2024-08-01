@@ -15,7 +15,10 @@ import PostCardSkeletonsComponent from './post-card-skeleton';
 interface IPost {
     id: number;
     content: string;
-    img: string[];
+    img: {
+        url: string;
+        key: string;
+    }[];
     createdAt: Date;
     profile: {
         id: number;
