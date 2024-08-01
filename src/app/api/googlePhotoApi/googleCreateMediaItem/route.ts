@@ -1,12 +1,13 @@
 import { createMediaItem } from '@/_utils/createMediaItem';
-import { type NextRequest } from 'next/server';
+import { NextResponse, type NextRequest } from 'next/server';
 
 export async function POST(req: NextRequest) {
     try {
         const uploadToken = await createMediaItem(req);
-        return new Response(JSON.stringify(uploadToken), { status: 200 });
+        // return new Response(JSON.stringify(uploadToken), { status: 200 });
+        return NextResponse.json(uploadToken, { status: 200 });
     } catch (error: any) {
         console.log('Error:', error);
-        return new Response("An error occurred", { status: 500 });
+        return NextResponse.json('Error creating media item', { status: 500 });
     }
 }

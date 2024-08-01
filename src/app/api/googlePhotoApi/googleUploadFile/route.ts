@@ -1,6 +1,6 @@
 // pages/api/upload.ts
 // import type { NextApiRequest, NextApiResponse } from 'next'
-import { type NextRequest } from 'next/server'
+import { NextResponse, type NextRequest } from 'next/server'
 import { pipeline } from 'stream';
 import { promisify } from 'util';
 import fs from 'fs';
@@ -28,10 +28,10 @@ export async function POST(req: NextRequest) {
       uploadToken: uploadToken,
     }
 
-    return new Response(JSON.stringify(responseBody), { status: 200 });
+    return NextResponse.json(responseBody, { status: 200 });
 
   } catch (error: any) {
     console.log('Error:', error);
-    return new Response("An error occurred", { status: 500 });
+    return NextResponse.json('Error uploading file', { status: 500 });
   }
 }
