@@ -8,7 +8,13 @@ export async function uploadToGooglePhotos(formData: FormData, mimeType: string,
     try {
         // All endpoints we need to call
         const UploadBytesEndpoint = 'https://photoslibrary.googleapis.com/v1/uploads';
-        // const CreateMediaItemEndpoint = 'https://photoslibrary.googleapis.com/v1/mediaItems:batchCreate';
+        
+        // Get the file from the form data
+        const file = formData.get('file');
+        if (!(file instanceof File)) {
+        throw new Error('No file found in form data');
+        }
+        const fileContent = await file.arrayBuffer();
 
         // 1. Get upload token
         const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
@@ -16,7 +22,7 @@ export async function uploadToGooglePhotos(formData: FormData, mimeType: string,
         if (!token) {
             throw new Error('No token found');
         }
-        const accessToken = token.accessToken
+        const accessToken = token.accessToken;
 
         // 2. Upload Bytes to Google Photos
         const uploadBytesHeaders = {
@@ -29,7 +35,7 @@ export async function uploadToGooglePhotos(formData: FormData, mimeType: string,
         const response = await fetch(UploadBytesEndpoint, {
             method: 'POST',
             headers: uploadBytesHeaders,
-            body: formData,
+            body: fileContent,
         });
         
         // Log the response for debugging

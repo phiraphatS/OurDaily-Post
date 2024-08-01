@@ -9,6 +9,11 @@ const handler = NextAuth({
     GoogleProvider({
       clientId: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID as string,
       clientSecret: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_SECRET as string,
+      authorization: {
+        params: {
+          scope: 'https://www.googleapis.com/auth/photoslibrary',
+        },
+      },
     }),
     CredentialsProvider({
       name: 'Credentials',
