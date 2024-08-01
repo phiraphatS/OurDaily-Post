@@ -1,11 +1,12 @@
 import { Image, Text, Box, Card, CardHeader, Flex, Avatar, Heading, IconButton, CardBody, Grid, GridItem, CardFooter, Button, AvatarGroup, useDisclosure } from '@chakra-ui/react';
 import moment from 'moment';
-import React from 'react'
+import React, { useEffect } from 'react'
 import { BiSolidHeart, BiHeart, BiChat, BiShare } from 'react-icons/bi';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import CommentDrawerComponent from './comment-drawer';
 import PostHeaderMenu from './post-header-menu';
 import { postService } from '@/_services/post-service';
+import { useSession } from 'next-auth/react';
 
 interface IPost {
     id: number;
@@ -41,9 +42,21 @@ interface IProps {
     onLike: (postId: number) => void;
 }
 
+async function fetchImageAsBlob(url: string, accessToken: string) {
+    const response = await fetch(url, {
+        headers: {
+            'Authorization': `Bearer ${accessToken}`
+        }
+    });
+    const blob = await response.blob();
+    return URL.createObjectURL(blob);
+}
+
 export default function PostCardComponent(props: IProps) {
-    const { post, onLike } = props;
+    const { post, onLike, setPosts } = props;
     const { isOpen: isCommentOpen, onOpen: onCommentOpen, onClose: onCommentClose } = useDisclosure();
+    const { data: session } = useSession();
+    const accessToken = session?.accessToken;
 
     const isPersonal = post.profile.id === 2;
     const fromNow = (createdDate: Date) => {
@@ -53,6 +66,24 @@ export default function PostCardComponent(props: IProps) {
     const commentPost = () => {
         onCommentOpen();
     }
+
+    useEffect(() => {
+        async function loadImages() {
+            if (!accessToken) return [];
+            const urls = await Promise.all(
+                post.img.map(imageUrl => fetchImageAsBlob(imageUrl, accessToken))
+            );
+
+            setPosts((pre) => (pre.map((post) => (
+                post.id === props.post.id ? { ...post, img: urls } : post
+            ))));
+        }
+
+        loadImages();
+
+        // Cleanup function to revoke object URLs
+        return () => { };
+    }, [post.img, accessToken]);
 
     const avatarActionGroup = (like: any[]) => {
         return <>
@@ -259,7 +290,7 @@ export default function PostCardComponent(props: IProps) {
                     <BiShare />
                 </Button>
             </CardFooter>
-            { isCommentOpen && (
+            {isCommentOpen && (
                 <CommentDrawerComponent isOpen={isCommentOpen} onClose={onCommentClose} postId={post.id} updateCommentCount={updateCommentCount} />
             )}
         </Card>
