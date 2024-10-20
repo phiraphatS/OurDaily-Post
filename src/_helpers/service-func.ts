@@ -1,7 +1,12 @@
+import authOption from "@/_utils/auth-option";
+import { getServerSession } from "next-auth";
+
 export const serviceFunction = {
   generateQueryString,
   randomString,
   generateBoundary,
+  allUserAbleInSystem,
+  joinAlbum,
 };
 
 function generateQueryString(params: any, prefix = "") {
@@ -34,4 +39,76 @@ function randomString(length: number) {
 
 function generateBoundary() {
   return `--------------------------${randomString(24)}`;
+}
+
+function allUserAbleInSystem() {
+  return [
+    {
+      emailAddress: 'pitchananbam21627@gmail.com',
+    },
+    {
+      emailAddress: 'phiraphat.sukkasem@gmail.com',
+    }
+  ]
+}
+
+async function joinAlbum(email: string, accessToken: string) {
+  try {
+    const query = new URLSearchParams({ title: 'OurDailyApp' }).toString()
+    const checkUserInAlbum = await fetch(`${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/google-picture/check-is-user-in-album?${query}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-user-email': email,
+      },
+    });
+
+    if (checkUserInAlbum.ok) {
+      const jsonObj = await checkUserInAlbum.json();
+      if (jsonObj.status === true && !jsonObj.results.isJoined) {
+        const googleJoinAlbumEndPoint = `https://photoslibrary.googleapis.com/v1/sharedAlbums:join`;
+        const joinAlbumHeader = {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`
+        }
+
+        const joinAlbumBody = {
+          shareToken: jsonObj.results.shareToken
+        }
+
+        const resJoinAlbum = await fetch(googleJoinAlbumEndPoint, {
+          method: 'POST',
+          headers: joinAlbumHeader,
+          body: JSON.stringify(joinAlbumBody)
+        })
+
+        if (resJoinAlbum.ok) {
+          const resUpdateAlbumOwner = await fetch(`${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/google-picture/add-user-to-album`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'x-user-email': email,
+            },
+            body: JSON.stringify({
+              albumId: jsonObj.results.albumId,
+              role: 'joiner',
+            }),
+          });
+
+          if (resUpdateAlbumOwner.ok) {
+            console.log('User added to album');
+          } else {
+            console.error('Failed to add user to album');
+          }
+        } else {
+          console.log(await resJoinAlbum.json());
+          console.error('Failed to join album');
+        }
+      }
+    } else {
+      console.error('Failed to check user in album');
+    }
+  } catch (error) {
+    console.error('Error in joinAlbumIfNeeded:', error);
+  }
 }

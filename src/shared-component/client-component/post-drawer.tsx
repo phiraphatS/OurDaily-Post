@@ -9,6 +9,7 @@ import { postService } from '@/_services/post-service';
 import { serviceFunction } from '@/_helpers/service-func';
 // Import the plugin code
 import FilePondPluginImageResize from 'filepond-plugin-image-resize';
+import { useSession } from 'next-auth/react';
 
 FilePondAddPlugin.registerPlugin(FilePondPluginImageResize);
 interface IFormValues {
@@ -23,6 +24,8 @@ interface IProps {
 }
 
 export default function PostDrawerComponent({ isOpen, refresh, onClose }: IProps) {
+    const { data: session } = useSession();
+    const allEmails: { emailAddress: string }[] = serviceFunction.allUserAbleInSystem();
 
     const initialValues: IFormValues = {
         contentText: '',
@@ -34,16 +37,25 @@ export default function PostDrawerComponent({ isOpen, refresh, onClose }: IProps
         // validationSchema: validateSchema,
         onSubmit: async (values) => {
             let mediaItem = [];
-            console.log('values', values);
-            
-            if (values.uploadToken  && values.uploadToken.length > 0) {
+
+            if (values.uploadToken && values.uploadToken.length > 0) {
+                const filteredEmails = allEmails.filter((email) => email.emailAddress !== session?.user?.email);
+                const mappedEmails = filteredEmails.map((email) => ({
+                    emailAddress: email.emailAddress,
+                    role: 'viewer',
+                }));
+                const reqBody = {
+                    uploadItems: values.uploadToken,
+                    shareWith: mappedEmails,
+                }
+
                 const fetchData = await fetch('/api/googlePhotoApi/googleCreateMediaItem', {
                     method: 'POST',
-                    body: JSON.stringify(values.uploadToken),
+                    body: JSON.stringify(reqBody),
                 }).then(async (res) => await res.json())
-                .catch((err: any) => {
-                    console.log(err);
-                });
+                    .catch((err: any) => {
+                        console.log(err);
+                    });
 
                 mediaItem = fetchData.newMediaItemResults || [];
             }
@@ -101,23 +113,23 @@ export default function PostDrawerComponent({ isOpen, refresh, onClose }: IProps
             method: 'POST',
             body: form,
         })
-        .then(async (res) => {
-            if (!res.ok) {
-                throw new Error('Upload failed');
-            }
-            const uploadTokenObj = await res.json();
-            return uploadTokenObj
-        })
-        .then((uploadTokenObj: any) => {
-            if (uploadTokenObj) {
-                formik.setFieldValue('uploadToken', [...formik.values.uploadToken, uploadTokenObj]);
-                load(uploadTokenObj);
-            } else {
+            .then(async (res) => {
+                if (!res.ok) {
+                    throw new Error('Upload failed');
+                }
+                const uploadTokenObj = await res.json();
+                return uploadTokenObj
+            })
+            .then((uploadTokenObj: any) => {
+                if (uploadTokenObj) {
+                    formik.setFieldValue('uploadToken', [...formik.values.uploadToken, uploadTokenObj]);
+                    load(uploadTokenObj);
+                } else {
+                    error('Upload failed');
+                }
+            }).catch((err: any) => {
                 error('Upload failed');
-            }
-        }).catch((err: any) => {
-            error('Upload failed');
-        })
+            })
     }
 
     const isButtonDisabled = formik.values.contentText.length === 0 && formik.values.uploadToken.length === 0;
